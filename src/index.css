@@ -1,0 +1,14 @@
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* Always show scrollbar */
+.always-show-scrollbar::-webkit-scrollbar {
+    display: block;
+  }
+  
+  .always-show-scrollbar {
+    scrollbar-width: thin; /* For Firefox */
+  }
+  
