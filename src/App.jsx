@@ -68,8 +68,8 @@ function App() {
     <>
     <div className='container mx-auto '>
 
-<div className="grid grid-cols-2 gap-4">
-  <div className='col-span-2  navbar mx-auto w-full mb-2'>
+<div className="grid grid-cols-6 gap-4">
+  <div className='col-span-6  navbar mx-auto w-full mb-2'>
   <div className="navbar bg-base-100">
   <div className="flex-1">
     <a className="btn btn-ghost text-xl">Pincher</a>

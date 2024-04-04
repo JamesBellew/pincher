@@ -17,6 +17,7 @@ function Income({ incomeArray }) {
   const [incomeSectionNav,setIncomeSectionNav] = useState('overview')//this the usestate for the navigation for the income right hand side grid, it navigates between the overview and the history components. the two key words for valeus are overview and history
 
 
+  
   useEffect(()=>{
     const totalAmount = incomeArray.reduce((accumulator, currentItem) => accumulator + currentItem.amount ,0);
     setTotalIncomeFigure(totalAmount)
@@ -113,7 +114,7 @@ setIncomeSectionNav(section)
   return (
     <>
 
-  <div className="md:h-[75vh] h-[80vh] px-4 bg-white shadow-md col-span-2 md:col-span-1 rounded-md">
+  <div className="md:h-[80vh] h-[85vh] px-4 bg-white shadow-md col-span-4 md:col-span-4 rounded-md">
     
 <div className='grid grid-cols-2 mx-auto gap-1 h-full grid-rows-8 '>
 <div className='relative col-span-2  row-span-1'>
@@ -157,43 +158,97 @@ incomeSectionNav === 'overview'?(
 
 </div>
 
-
-<div className='col-span-2 row-span-3 overflow-auto mb-7'>
-<div className='grid mx-9  col-span-4'>
-  <div className='mb-2'>
-<button onClick={()=>document.getElementById('my_modal_1').showModal()} className=' bg-white shadow-md px-4 mx-2 rounded-md'> <FontAwesomeIcon icon={faPlus} /></button>
-<button className='px-4 bg-white shadow-md mx-1 rounded-md'><FontAwesomeIcon icon={faPencil} /></button>
-<button className='px-4 bg-silver mx-1'></button>
-{/* the below is the modal for adding a new income stream */}
 <dialog id="my_modal_1" className="modal">
   <div className="modal-box">
     <h3 className="font-bold text-lg">Add New Income</h3>
-    <p className="py-4">Press ESC key or click the button below to close</p>
+    <br></br>
+    <label className="input input-bordered flex items-center gap-2">
+  Name :
+  <input type="text" className="grow" placeholder="Side Hustle" />
+</label>
+<label className="input input-bordered flex items-center gap-2">
+  Amount :
+  <input type="number" className="grow" placeholder="1" />
+</label>
+<select className="select select-bordered w-full">
+      <option disabled selected>Choose a Color</option>
+      
+      <option className='border-l-2 border-purple' style={{ backgroundColor: '#6B7280', color: '#FFFFFF' }}>Grey</option>
+      <option style={{ backgroundColor: '#EF4444', color: '#FFFFFF' }}>Red</option>
+      <option style={{ backgroundColor: '#10B981', color: '#FFFFFF' }}>Green</option>
+    </select>
+    <select className="select select-bordered w-full">
+      <option disabled selected>Choose a Icon</option>
+
+      <option className='border-l-2 border-purple' style={{ backgroundColor: '#6B7280', color: '#FFFFFF' }}>
+        
+      &#9762;
+        
+        
+        </option>
+      <option style={{ backgroundColor: '#EF4444', color: '#FFFFFF' }}>Red</option>
+      <option style={{ backgroundColor: '#10B981', color: '#FFFFFF' }}>Green</option>
+    </select>
     <div className="modal-action">
+      <button className='btn btn-primary'>Add</button>
       <form method="dialog">
-        {/* if there is a button in form, it will close the modal */}
+       
         <button className="btn">Close</button>
       </form>
     </div>
   </div>
 </dialog>
+{/*= <div className='grid mx-9 bg-tahiti'>
+  <div className='mb-2'>
+<button onClick={()=>document.getElementById('my_modal_1').showModal()} className=' bg-white shadow-md px-4 mx-2 rounded-md'> <FontAwesomeIcon icon={faPlus} /></button>
+<button className='px-4 bg-white shadow-md mx-1 rounded-md'><FontAwesomeIcon icon={faPencil} /></button>
+<button className='px-4 bg-silver mx-1'></button>
+
+
   </div>
 
-</div>
-<ul className='px-10 overflow-y-scroll always-show-scrollbar text-left'>
+</div> */}
+<div className='col-span-2 grid grid-cols-8 row-span-4 overflow-auto mb-7'>
+
+<button onClick={()=>document.getElementById('my_modal_1').showModal()} className='absolute w-7 h-7 translate-y-[-10px] rounded-full bg-tahiti text-center text-white'>+</button>
+<ul className='px-2 overflow-y-scroll col-span-5  always-show-scrollbar text-left'>
 
   {incomeArray.map((income) => (
     <li key={income.id} className='flex items-center bg-slate-100 shadow-md text-sm px-6 py-2 rounded-md cursor-pointer m-1'>
-      <div className='income-color-bar bg-navy-dark-1 rounded-lg w-10 h-1 mr-2'></div>
+      <div className='income-color-bar bg-tahiti rounded-lg w-10 h-1 mr-2'></div>
       <span> <span className='mx-4'>£{income.amount} </span> <span className='pr-4'>-</span>  {income.name}</span>
     </li>
   ))}
   
 </ul>
-{/* <div className='w-7 h-7 absolute bg-primary text-white rounded-full  text-center my-auto  cursor-pointer'>
+<div className='col-span-3 grid  grid-cols-3 p-1 gap-1 rounded-md'>
+<div className='col-span-1 rounded-md shadow-md text-center flex flex-col items-center justify-center cursor-pointer'>
+<h2 className='text-tahiti'>7</h2><p className='text-xs'>Streams</p></div>
+<div className='col-span-1 rounded-md shadow-md text-center flex flex-col items-center justify-center cursor-pointer'>
+<h2 className='text-tahiti'>28%</h2><p className='text-xs'>YTD</p></div>
+<div className='col-span-1 rounded-md shadow-md text-center flex flex-col items-center justify-center cursor-pointer'> 
+<h2 className='text-tahiti'>58%</h2><p className='text-xs'>To Goal</p></div>
+<div className='col-span-1 rounded-md shadow-md text-center flex flex-col items-center justify-center cursor-pointer'> 
+<h2 className='text-tahiti'>
+  <div className="radial-progress text-xs radial-progress-xs" style={{"--value":70}} role="progressbar">70%</div>
+  </h2><p className='text-xs'>AUM</p></div>
+<div className='col-span-2 rounded-md shadow-md text-center flex flex-col items-center justify-center '>
+<h2 className='text-tahiti'><progress className="progress text-tahiti bg-tahiti w-40" value="30" max="100"></progress></h2><p className='text-xs mt-2'>Savings Over Expenses</p>
+<select className=" p-1 rounded-md mt-1 bg-white shadow-sm cursor-pointer">
+  <option disabled selected>MTD</option>
+  <option>YTD</option>
+  <option>QRT</option>
+  <option>ALL</option>
 
-  <p>+</p>
-</div> */}
+</select>
+</div>
+
+
+
+
+
+</div>
+
 
 </div>
 
