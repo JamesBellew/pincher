@@ -9,15 +9,45 @@ import '../App.css';
 
 Chart.register(PieController, ArcElement, Tooltip, Legend);
 
-function Income({ incomeArray }) {
+function Income({ incomeArray, onAddIncome }) {
   const chartRef = useRef(null);
   const [totalIncomeFigure,setTotalIncomeFigure] = useState(0)
   const [legendItems, setLegendItems] = useState([]);
   const chartInstance = useRef(null); // Use this ref to keep track of the chart instance
   const [incomeSectionNav,setIncomeSectionNav] = useState('overview')//this the usestate for the navigation for the income right hand side grid, it navigates between the overview and the history components. the two key words for valeus are overview and history
+const [newIncomeName,setNewIncomeName]=useState('test')
+const [newIncomeAmount,setNewIncomeAmount]=useState(0)
+const [isFormValid, setIsFormValid] = useState(false);
+  // Validation check function
+  const validateForm = () => {
+    return newIncomeName.trim() !== '' && parseFloat(newIncomeAmount) > 0;
+  };
+  // Handler for input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    if (name === 'name') {
+      setNewIncomeName(value);
+    } else if (name === 'amount') {
+      setNewIncomeAmount(value);
+    }
+      // Check if form is valid after the update
+      setIsFormValid(validateForm());
+  };
 
-
+  const handleSubmit = () => {
+    const newIncomeData = {
+      name: newIncomeName,
+      // Convert amount to a number to ensure correct addition
+      amount: +newIncomeAmount,
+      color: '#1a8ec7',
+      icon: '&#x1F4B8;'
+    };
+    const modal = document.getElementById('my_modal_1');
+    if (modal) modal.close(); // This will close the modal
   
+    // Call the onAddIncome function passed down as prop, without an id
+    onAddIncome(newIncomeData);
+  };
   useEffect(()=>{
     const totalAmount = incomeArray.reduce((accumulator, currentItem) => accumulator + currentItem.amount ,0);
     setTotalIncomeFigure(totalAmount)
@@ -114,7 +144,7 @@ setIncomeSectionNav(section)
   return (
     <>
 
-  <div className="md:h-[80vh] h-[85vh] px-4 bg-white shadow-md col-span-4 md:col-span-4 rounded-md">
+  <div className="md:h-[80vh] h-[85vh] px-4 bg-base-200 shadow-md col-span-4 md:col-span-4 rounded-md">
     
 <div className='grid grid-cols-2 mx-auto gap-1 h-full grid-rows-8 '>
 <div className='relative col-span-2  row-span-1'>
@@ -125,11 +155,11 @@ setIncomeSectionNav(section)
 </div>
 
 </div>
-<div className='bg-white row-span-4 m-4 mx-auto rounded-md'>
+<div className='dark:bg-base-200 bg-white row-span-4 m-4 mx-auto rounded-md'>
             {/* Chart.js Graph will be rendered inside this canvas */}
             <canvas ref={chartRef}></canvas>
           </div>
-<div className='bg-white row-span-4  m-4 rounded-md overflow-auto'>
+<div className='dark:bg-base-200 bg-white row-span-4  m-4 rounded-md overflow-auto'>
 
 <div className="overflow-x-auto overflow-y-scroll always-show-scrollbar ">
   <div className='grid grid-cols-2 grid-rows-1 p-4'>
@@ -164,11 +194,11 @@ incomeSectionNav === 'overview'?(
     <br></br>
     <label className="input input-bordered flex items-center gap-2">
   Name :
-  <input type="text" className="grow" placeholder="Side Hustle" />
+  <input type="text" name='name' className="grow" placeholder="Side Hustle" onChange={handleInputChange}  />
 </label>
 <label className="input input-bordered flex items-center gap-2">
   Amount :
-  <input type="number" className="grow" placeholder="1" />
+  <input type="number" name='amount' className="grow" placeholder="1" onChange={handleInputChange}  />
 </label>
 <select className="select select-bordered w-full">
       <option disabled selected>Choose a Color</option>
@@ -190,7 +220,14 @@ incomeSectionNav === 'overview'?(
       <option style={{ backgroundColor: '#10B981', color: '#FFFFFF' }}>Green</option>
     </select>
     <div className="modal-action">
-      <button className='btn btn-primary'>Add</button>
+      <button onClick={handleSubmit}
+      
+      disabled={!isFormValid}
+
+      className={`${
+        isFormValid ? 'bg-primary' : 'bg-gray-400 disabled'
+      } text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline`}
+      >Add</button>
       <form method="dialog">
        
         <button className="btn">Close</button>

@@ -10,7 +10,7 @@ import Graph from './components/Graph.comp'
 function App() {
 
 
-  const income = [
+  const [income, setIncome] = useState([
     
   {
   id:1,
@@ -32,38 +32,21 @@ function App() {
       amount:3500,
       color:'#3f3f3f',
       icon:'&#9872;'
-      },
-      {
-        id:4,
-        name:'Revolute',
-        amount:3400,
-        color:'#3f3f3f',
-        icon:'&#9872;'
-        },
-        {
-          id:5,
-          name:'AIB Shared Account',
-          amount:8500,
-          color:'#3f3f3f',
-          icon:'&#9872;'
-          },
-          {
-            id:6,
-            name:'Crypto',
-            amount:2500,
-            color:'#3f3f3f',
-            icon:'&#9872;'
-            },
-            {
-              id:7,
-              name:'Bank Account (Current Account)',
-              amount:2500,
-              color:'#3f3f3f',
-              icon:'&#9872;'
-              },
+      }
+   
         
 
-]
+])
+
+// Function to add a new income to the array
+const addNewIncome = (newIncomeData) => {
+  // Calculate the new ID based on existing incomes
+  const newId = income.length > 0 ? income[income.length - 1].id + 1 : 1;
+  // Create a new income object with the new ID and the data passed from the child
+  const newIncome = { id: newId, ...newIncomeData };
+  // Use the spread operator to clone the existing income array and add the newIncome
+  setIncome(income => [...income, newIncome]);
+};
   return (
     <>
     <div className='container mx-auto '>
@@ -116,7 +99,7 @@ function App() {
 
   </div>
 
-  <Income incomeArray={income}/>
+  <Income incomeArray={income} onAddIncome={addNewIncome} />
   <Expenses/>
  
   <Graph/>
