@@ -18,10 +18,30 @@ function Income({ incomeArray, onAddIncome }) {
 const [newIncomeName,setNewIncomeName]=useState('test')
 const [newIncomeAmount,setNewIncomeAmount]=useState(0)
 const [isFormValid, setIsFormValid] = useState(false);
+const [isEditIncomeModalActive,setIsEditIncomeModalActive] = useState(true)
+const [incomeSelectedForEdit,setIncomeSelectedForEdit] = useState(incomeArray[0])
+ // Toggle modal visibility
+ const toggleModal = () => setIsEditIncomeModalActive(!isEditIncomeModalActive);
+
+ const [IncomeEditValue, setIncomeSelectedEditValue] = useState(12500); // Set the initial value
+
+ const handleChange = (e) => {
+  setIncomeSelectedEditValue(e.target.value); // Update state with new value
+ };
   // Validation check function
   const validateForm = () => {
     return newIncomeName.trim() !== '' && parseFloat(newIncomeAmount) > 0;
   };
+  
+const incomeClickHandler=(income)=>{
+  setIncomeSelectedForEdit(income)
+  setIncomeSelectedEditValue(income.amount)
+  console.log('====================================');
+  console.log('you just clciked on this income boiii');
+  console.log('====================================');
+  setIsEditIncomeModalActive(!isEditIncomeModalActive)
+}
+
   // Handler for input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -151,7 +171,7 @@ setIncomeSectionNav(section)
   {/* <span className='absolute text-xl font-bold mt-2 text-navy-dark-1'>Income</span> */}
   <div className='mx-auto text-center '>
     <br></br>
-<span className='text-center text-xl font-bold mt-5 text-navy-dark-1 relative '>£{totalIncomeFigure}</span>
+<span className='text-center text-xl font-bold mt-5    light:text-navy-dark-1 relative '>£{totalIncomeFigure}</span>
 </div>
 
 </div>
@@ -187,6 +207,34 @@ incomeSectionNav === 'overview'?(
 
 
 </div>
+
+{isEditIncomeModalActive && (
+  <>
+    <div onClick={incomeClickHandler} className='fixed inset-0 w-full h-full bg-base-200/75 flex items-center justify-center z-50'>
+      {/* Stop propagation onClick inside the modal content to prevent the backdrop handler from firing */}
+      <div className='bg-base-100 px-20 p-8 m-4 rounded-md text-white max-w-lg mx-auto ' onClick={(e) => e.stopPropagation()}>
+  
+      <div className="mt-2 w-[25%] mb-4 h-1 rounded-md bg-tahiti"></div>
+        <p>{incomeSelectedForEdit.name}</p>
+   
+        <input
+      type="number"
+      value={IncomeEditValue} // Bind state to input
+      onChange={handleChange} // Handle changes
+      className="input input-bordered w-full max-w-xs my-2"
+      min={0} // Minimum value
+      step={100} // Step value
+    />
+    
+        <button className='btn btn-purple bg-purple text-white mt-5 mx-5' onClick={incomeClickHandler}>Save</button>
+        <button className='btn btn-base-200 mt-5' onClick={incomeClickHandler}>Close</button>
+        {/* Add more content or buttons here */}
+      </div>
+    </div>
+  </>
+)}
+
+
 
 <dialog id="my_modal_1" className="modal">
   <div className="modal-box">
@@ -248,10 +296,14 @@ incomeSectionNav === 'overview'?(
 <div className='col-span-2 grid grid-cols-8 row-span-4 overflow-auto mb-7'>
 
 <button onClick={()=>document.getElementById('my_modal_1').showModal()} className='absolute w-7 h-7 translate-y-[-10px] rounded-full bg-tahiti text-center text-white'>+</button>
-<ul className='px-2 overflow-y-scroll col-span-5  always-show-scrollbar text-left'>
+<ul
+
+className='px-2 overflow-y-scroll col-span-5  always-show-scrollbar text-left'>
 
   {incomeArray.map((income) => (
-    <li key={income.id} className='flex items-center bg-slate-100 shadow-md text-sm px-6 py-2 rounded-md cursor-pointer m-1'>
+    <li  
+    onClick={()=>{incomeClickHandler(income)}}
+    key={income.id} className='flex items-center bg-slate-100 shadow-md text-sm px-6 py-2 rounded-md cursor-pointer m-1'>
       <div className='income-color-bar bg-tahiti rounded-lg w-10 h-1 mr-2'></div>
       <span> <span className='mx-4'>£{income.amount} </span> <span className='pr-4'>-</span>  {income.name}</span>
     </li>
