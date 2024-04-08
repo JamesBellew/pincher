@@ -9,7 +9,7 @@ import '../App.css';
 
 Chart.register(PieController, ArcElement, Tooltip, Legend);
 
-function Income({ incomeArray, onAddIncome }) {
+function Income({ incomeArray, onAddIncome ,onEditIncome}) {
   const chartRef = useRef(null);
   const [totalIncomeFigure,setTotalIncomeFigure] = useState(0)
   const [legendItems, setLegendItems] = useState([]);
@@ -18,7 +18,7 @@ function Income({ incomeArray, onAddIncome }) {
 const [newIncomeName,setNewIncomeName]=useState('test')
 const [newIncomeAmount,setNewIncomeAmount]=useState(0)
 const [isFormValid, setIsFormValid] = useState(false);
-const [isEditIncomeModalActive,setIsEditIncomeModalActive] = useState(true)
+const [isEditIncomeModalActive,setIsEditIncomeModalActive] = useState(false)
 const [incomeSelectedForEdit,setIncomeSelectedForEdit] = useState(incomeArray[0])
  // Toggle modal visibility
  const toggleModal = () => setIsEditIncomeModalActive(!isEditIncomeModalActive);
@@ -40,6 +40,11 @@ const incomeClickHandler=(income)=>{
   console.log('you just clciked on this income boiii');
   console.log('====================================');
   setIsEditIncomeModalActive(!isEditIncomeModalActive)
+
+
+}
+const saveIncomeEditHandler=()=>{
+  onEditIncome(incomeSelectedForEdit.id, IncomeEditValue);
 }
 
   // Handler for input changes
@@ -110,6 +115,10 @@ const incomeClickHandler=(income)=>{
 
     return () => chart.destroy();
   }, [incomeArray]);
+
+const editIncomeItem=(income)=>{
+  
+}
 
 //this belkow components is the legend for the barcart/ the overview components which has a brewakdown of everythign withn the income array.
 function OverviewComponent(){
@@ -226,7 +235,7 @@ incomeSectionNav === 'overview'?(
       step={100} // Step value
     />
     
-        <button className='btn btn-purple bg-purple text-white mt-5 mx-5' onClick={incomeClickHandler}>Save</button>
+        <button className='btn btn-purple bg-purple text-white mt-5 mx-5' onClick={saveIncomeEditHandler}>Save</button>
         <button className='btn btn-base-200 mt-5' onClick={incomeClickHandler}>Close</button>
         {/* Add more content or buttons here */}
       </div>

@@ -38,6 +38,15 @@ function App() {
 
 ])
 
+
+const editIncomeItem = (incomeId, newAmount) => {
+  setIncome(currentIncome =>
+    currentIncome.map(item =>
+      item.id === incomeId ? { ...item, amount: newAmount } : item
+    )
+  );
+};
+
 // Function to add a new income to the array
 const addNewIncome = (newIncomeData) => {
   // Calculate the new ID based on existing incomes
@@ -99,7 +108,7 @@ const addNewIncome = (newIncomeData) => {
 
   </div>
 
-  <Income incomeArray={income} onAddIncome={addNewIncome} />
+  <Income incomeArray={income} onAddIncome={addNewIncome} onEditIncome={editIncomeItem}/>
   <Expenses/>
  
   <Graph/>
