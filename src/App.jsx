@@ -37,6 +37,21 @@ function App() {
         
 
 ])
+const [isNotifMenuActive,setIsNotifMenuActive] = useState(false)
+const [notificationMesage,setNotificationMessage]=useState('Whoops, something went wrong here xD')
+
+const showNotif = (message) => {
+  setIsNotifMenuActive(true);
+  console.log('====================================');
+  setNotificationMessage(message);
+  console.log('====================================');
+  
+  // Set a timeout to run after 2 seconds
+  setTimeout(() => {
+    // This code runs after a 2-second delay
+    setIsNotifMenuActive(false); // Set the notification menu state to false
+  }, 4000); // 2000 milliseconds delay
+};
 
 
 const editIncomeItem = (incomeId, newAmount) => {
@@ -58,9 +73,20 @@ const addNewIncome = (newIncomeData) => {
 };
   return (
     <>
-    <div className='container mx-auto '>
+ {isNotifMenuActive &&
+  <div className='absolute w-2/4 left-1/4 top-[85%] h-auto z-50 bg-purple rounded-md centerPlz p-5'>
 
+
+    <p>Income Updated !</p>
+    <p>{notificationMesage}</p>
+  
+  </div>
+}
+
+    <div className='container mx-auto '>
+  
 <div className="grid grid-cols-6 gap-4">
+  
   <div className='col-span-6  navbar mx-auto w-full mb-2'>
   <div className="navbar bg-base-100">
   <div className="flex-1">
@@ -108,7 +134,7 @@ const addNewIncome = (newIncomeData) => {
 
   </div>
 
-  <Income incomeArray={income} onAddIncome={addNewIncome} onEditIncome={editIncomeItem}/>
+  <Income incomeArray={income} onAddIncome={addNewIncome} onEditIncome={editIncomeItem} onNotif={showNotif}/>
   <Expenses/>
  
   <Graph/>

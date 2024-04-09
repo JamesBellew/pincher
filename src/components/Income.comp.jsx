@@ -9,7 +9,7 @@ import '../App.css';
 
 Chart.register(PieController, ArcElement, Tooltip, Legend);
 
-function Income({ incomeArray, onAddIncome ,onEditIncome}) {
+function Income({ incomeArray, onAddIncome ,onEditIncome,onNotif}) {
   const chartRef = useRef(null);
   const [totalIncomeFigure,setTotalIncomeFigure] = useState(0)
   const [legendItems, setLegendItems] = useState([]);
@@ -20,6 +20,7 @@ const [newIncomeAmount,setNewIncomeAmount]=useState(0)
 const [isFormValid, setIsFormValid] = useState(false);
 const [isEditIncomeModalActive,setIsEditIncomeModalActive] = useState(false)
 const [incomeSelectedForEdit,setIncomeSelectedForEdit] = useState(incomeArray[0])
+
  // Toggle modal visibility
  const toggleModal = () => setIsEditIncomeModalActive(!isEditIncomeModalActive);
 
@@ -44,6 +45,8 @@ const incomeClickHandler=(income)=>{
 
 }
 const saveIncomeEditHandler=()=>{
+  setIsEditIncomeModalActive(!isEditIncomeModalActive)
+  onNotif('Changed the figure of ' + incomeSelectedForEdit.name + " from £" + incomeSelectedForEdit.amount + " to £" + IncomeEditValue)
   onEditIncome(incomeSelectedForEdit.id, IncomeEditValue);
 }
 
