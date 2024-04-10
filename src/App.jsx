@@ -55,15 +55,14 @@ const [incomeHistory,setIncomeHistory]= useState([
 
 const [isNotifMenuActive,setIsNotifMenuActive] = useState(false)
 const [notificationMesage,setNotificationMessage]=useState('Whoops, something went wrong here xD')
+//this below usestate is used to visually indicate the most recently added history item, I will do the same for the income once working 
+const [newlyAddedHistoryId, setNewlyAddedHistoryId] = useState(null);
+let highlightTimeout = null;
+
 
 const showNotif = (message) => {
   setIsNotifMenuActive(true);
-  console.log('====================================');
-  console.log('====================================');
-  console.log(message.title);
-  console.log('====================================');
   setNotificationMessage(message);
-  console.log('====================================');
   
   // Set a timeout to run after 2 seconds
   setTimeout(() => {
@@ -80,6 +79,26 @@ const editIncomeItem = (incomeId, newAmount) => {
     )
   );
 };
+
+const addIncomeHistory = (newIncomeHistoryData)=>{
+
+  const newId = incomeHistory.length > 0 ? incomeHistory[incomeHistory.length - 1].id + 1 : 1;
+  const newIncomeHistory = { id: newId, ...newIncomeHistoryData };
+  setIncomeHistory(incomeHistory => [...incomeHistory,newIncomeHistory])
+  setNewlyAddedHistoryId(newId);
+  console.log('==================================== parent');
+  console.log(+newId);
+  console.log('====================================');
+  //now I want to reset the id to something that doesn't exists like minus 1
+  if (highlightTimeout !== null) {
+    clearTimeout(highlightTimeout);
+  }
+  highlightTimeout = setTimeout(() => {
+    setNewlyAddedHistoryId(null);
+    highlightTimeout = null; // Reset the timeout reference
+  }, 2000);
+
+}
 
 // Function to add a new income to the array
 const addNewIncome = (newIncomeData) => {
@@ -153,7 +172,8 @@ const addNewIncome = (newIncomeData) => {
 
   </div>
 
-  <Income incomeArray={income} onAddIncome={addNewIncome} onEditIncome={editIncomeItem} onNotif={showNotif} incomeHistoryArray={incomeHistory}/>
+  <Income incomeArray={income} onAddIncome={addNewIncome} onEditIncome={editIncomeItem} onNotif={showNotif} incomeHistoryArray={incomeHistory} 
+  onAddIncomeHistory={addIncomeHistory} newlyAddedId={newlyAddedHistoryId} />
   <Expenses/>
  
   <Graph/>

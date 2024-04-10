@@ -9,7 +9,9 @@ import '../App.css';
 
 Chart.register(PieController, ArcElement, Tooltip, Legend);
 
-function Income({ incomeArray, onAddIncome ,onEditIncome,onNotif, incomeHistoryArray}) {
+function Income({ incomeArray, onAddIncome ,onEditIncome,onNotif, incomeHistoryArray,onAddIncomeHistory,newlyAddedId}) {
+
+
   const chartRef = useRef(null);
   const [totalIncomeFigure,setTotalIncomeFigure] = useState(0)
   const [totalIncomeStreams,setTotalIncomeStreams] = useState(0)
@@ -21,6 +23,7 @@ const [newIncomeAmount,setNewIncomeAmount]=useState(0)
 const [isFormValid, setIsFormValid] = useState(false);
 const [isEditIncomeModalActive,setIsEditIncomeModalActive] = useState(false)
 const [incomeSelectedForEdit,setIncomeSelectedForEdit] = useState(incomeArray[0])
+
 
 
  // Toggle modal visibility
@@ -39,9 +42,6 @@ const [incomeSelectedForEdit,setIncomeSelectedForEdit] = useState(incomeArray[0]
 const incomeClickHandler=(income)=>{
   setIncomeSelectedForEdit(income)
   setIncomeSelectedEditValue(income.amount)
-  console.log('====================================');
-  console.log('you just clciked on this income boiii');
-  console.log('====================================');
   setIsEditIncomeModalActive(!isEditIncomeModalActive)
 
 
@@ -49,8 +49,11 @@ const incomeClickHandler=(income)=>{
 const saveIncomeEditHandler=()=>{
   setIsEditIncomeModalActive(!isEditIncomeModalActive)
   onNotif({title:"Income Changed",message:'Changed the figure of ' + incomeSelectedForEdit.name + " from £" + incomeSelectedForEdit.amount + " to £" + IncomeEditValue})
-  // ,message:)
-  onEditIncome(incomeSelectedForEdit.id, IncomeEditValue);
+  onEditIncome(incomeSelectedForEdit.id, +IncomeEditValue);
+  onAddIncomeHistory( {incomeName:incomeSelectedForEdit.name,
+  date:'17/05/2024',
+  figureChange:+IncomeEditValue-incomeSelectedForEdit.amount})
+  
 }
 
   // Handler for input changes
@@ -80,6 +83,17 @@ const saveIncomeEditHandler=()=>{
     onAddIncome(newIncomeData);
     onNotif({title:"New Income Added",message:'Name : ' + newIncomeName  + " Amount : £" + newIncomeAmount })
   };
+
+  useEffect(()=>{
+    console.log('==================================== child');
+  console.log(newlyAddedId);
+  console.log('====================================');
+  },[newlyAddedId])
+
+
+
+
+  
   useEffect(()=>{
     const totalAmount = incomeArray.reduce((accumulator, currentItem) => accumulator + currentItem.amount ,0);
     setTotalIncomeFigure(totalAmount)
@@ -144,17 +158,25 @@ return  <ul className='text-xs ps-2 p-3'>
 </ul>
 
 }
+{/* <li 
+  className={`transition-opacity duration-700 ease-in-out ${historyItem.id === newlyAddedId ? 'opacity-100' : 'opacity-0'}`}
+  key={index}
+></li> */}
 //this belkow components is the History for the user/ the overview components which has a brewakdown of recent activity within the income/expenses array.
 function ActivityComponent() {
   return (
     <ul>
       {incomeHistoryArray.map((historyItem, index) => (
         // Use curly braces to evaluate and display JavaScript expressions within JSX
-        <li className='text-xs px-2' key={index}>
-        {historyItem.date + ": " + historyItem.incomeName}
+        <li 
+        className={`text-xs px-2 transition-all transition-opacity duration-700 ease-in-out ${historyItem.id === newlyAddedId ? 'bg-white/10 rounded-md p-1' : ''}`} // Apply text-purple if this is the newly added item
+        key={index}
+      >
+        {historyItem.date + ": "}
         <span className={historyItem.figureChange >= 0 ? 'text-purple' : 'text-tahiti'}>
           {historyItem.figureChange >= 0 ? ` £${historyItem.figureChange}` : ` -£${Math.abs(historyItem.figureChange)}`}
         </span>
+        <span className='text-center'> {historyItem.incomeName}</span>
       </li>
       ))}
     </ul>
@@ -216,7 +238,7 @@ incomeSectionNav === 'overview'?(
   <>
     <div onClick={incomeClickHandler} className='fixed inset-0 w-full h-full bg-base-200/75 flex items-center justify-center z-50'>
       {/* Stop propagation onClick inside the modal content to prevent the backdrop handler from firing */}
-      <div className='bg-base-100 px-20 p-8 m-4 rounded-md text-white max-w-lg mx-auto ' onClick={(e) => e.stopPropagation()}>
+      <div className='bg-base-100  px-20 p-8 m-4 rounded-md text-white max-w-lg mx-auto ' onClick={(e) => e.stopPropagation()}>
   
       <div className="mt-2 w-[25%] mb-4 h-1 rounded-md bg-tahiti"></div>
         <p>{incomeSelectedForEdit.name}</p>
