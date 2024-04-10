@@ -9,9 +9,10 @@ import '../App.css';
 
 Chart.register(PieController, ArcElement, Tooltip, Legend);
 
-function Income({ incomeArray, onAddIncome ,onEditIncome,onNotif}) {
+function Income({ incomeArray, onAddIncome ,onEditIncome,onNotif, incomeHistoryArray}) {
   const chartRef = useRef(null);
   const [totalIncomeFigure,setTotalIncomeFigure] = useState(0)
+  const [totalIncomeStreams,setTotalIncomeStreams] = useState(0)
   const [legendItems, setLegendItems] = useState([]);
   const chartInstance = useRef(null); // Use this ref to keep track of the chart instance
   const [incomeSectionNav,setIncomeSectionNav] = useState('overview')//this the usestate for the navigation for the income right hand side grid, it navigates between the overview and the history components. the two key words for valeus are overview and history
@@ -20,6 +21,7 @@ const [newIncomeAmount,setNewIncomeAmount]=useState(0)
 const [isFormValid, setIsFormValid] = useState(false);
 const [isEditIncomeModalActive,setIsEditIncomeModalActive] = useState(false)
 const [incomeSelectedForEdit,setIncomeSelectedForEdit] = useState(incomeArray[0])
+
 
  // Toggle modal visibility
  const toggleModal = () => setIsEditIncomeModalActive(!isEditIncomeModalActive);
@@ -46,7 +48,8 @@ const incomeClickHandler=(income)=>{
 }
 const saveIncomeEditHandler=()=>{
   setIsEditIncomeModalActive(!isEditIncomeModalActive)
-  onNotif('Changed the figure of ' + incomeSelectedForEdit.name + " from £" + incomeSelectedForEdit.amount + " to £" + IncomeEditValue)
+  onNotif({title:"Income Changed",message:'Changed the figure of ' + incomeSelectedForEdit.name + " from £" + incomeSelectedForEdit.amount + " to £" + IncomeEditValue})
+  // ,message:)
   onEditIncome(incomeSelectedForEdit.id, IncomeEditValue);
 }
 
@@ -75,11 +78,17 @@ const saveIncomeEditHandler=()=>{
   
     // Call the onAddIncome function passed down as prop, without an id
     onAddIncome(newIncomeData);
+    onNotif({title:"New Income Added",message:'Name : ' + newIncomeName  + " Amount : £" + newIncomeAmount })
   };
   useEffect(()=>{
     const totalAmount = incomeArray.reduce((accumulator, currentItem) => accumulator + currentItem.amount ,0);
     setTotalIncomeFigure(totalAmount)
 
+  },[incomeArray])
+
+  useEffect(()=>{
+    const totalStreams = incomeArray.length;
+    setTotalIncomeStreams(totalStreams)
   },[incomeArray])
   useEffect(() => {
     const ctx = chartRef.current.getContext('2d');
@@ -136,39 +145,22 @@ return  <ul className='text-xs ps-2 p-3'>
 
 }
 //this belkow components is the History for the user/ the overview components which has a brewakdown of recent activity within the income/expenses array.
-function ActivityComponent(){
-  return   <table className="table table-xs ">
-  <thead>
-    <tr>
-      <th>Date</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody className='text-xs'>
-    <tr>
-      <td>13/12/23</td>
-      <td>£2500 - Bank Account</td>
-    </tr>
-    <tr>
-      <td>12/12/21</td>
-      <td>£1500 - Credit Union</td>
-    </tr>
-
-    <tr>
-      <td>12/12/21</td>
-      <td>£1500 - Credit Union</td>
-    </tr> 
-    <tr>
-      <td>12/12/21</td>
-      <td>£1500 - Credit Union</td>
-    </tr> 
-    <tr>
-      <td>12/12/21</td>
-      <td>£1500 - Credit Union</td>
-    </tr> 
-  </tbody>
-</table>
+function ActivityComponent() {
+  return (
+    <ul>
+      {incomeHistoryArray.map((historyItem, index) => (
+        // Use curly braces to evaluate and display JavaScript expressions within JSX
+        <li className='text-xs px-2' key={index}>
+        {historyItem.date + ": " + historyItem.incomeName}
+        <span className={historyItem.figureChange >= 0 ? 'text-purple' : 'text-tahiti'}>
+          {historyItem.figureChange >= 0 ? ` £${historyItem.figureChange}` : ` -£${Math.abs(historyItem.figureChange)}`}
+        </span>
+      </li>
+      ))}
+    </ul>
+  );
 }
+
 
 const incomeNavClickHandler=(section)=>{
 setIncomeSectionNav(section)
@@ -324,7 +316,7 @@ className='px-2 overflow-y-scroll col-span-5  always-show-scrollbar text-left'>
 </ul>
 <div className='col-span-3 grid  grid-cols-3 p-1 gap-1 rounded-md'>
 <div className='col-span-1 rounded-md shadow-md text-center flex flex-col items-center justify-center cursor-pointer'>
-<h2 className='text-tahiti'>7</h2><p className='text-xs'>Streams</p></div>
+<h2 className='text-tahiti'>{totalIncomeStreams}</h2><p className='text-xs'>Streams</p></div>
 <div className='col-span-1 rounded-md shadow-md text-center flex flex-col items-center justify-center cursor-pointer'>
 <h2 className='text-tahiti'>28%</h2><p className='text-xs'>YTD</p></div>
 <div className='col-span-1 rounded-md shadow-md text-center flex flex-col items-center justify-center cursor-pointer'> 

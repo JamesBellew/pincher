@@ -37,11 +37,30 @@ function App() {
         
 
 ])
+const [incomeHistory,setIncomeHistory]= useState([
+
+  {
+    id:0,
+    incomeName:'Bank Account (Current)',
+    date:'12/05/2024',
+    figureChange:500
+  },
+  {
+    id:1,
+    incomeName:'Bank Account (Current)',
+    date:'25/05/2024',
+    figureChange:-50
+  }
+])
+
 const [isNotifMenuActive,setIsNotifMenuActive] = useState(false)
 const [notificationMesage,setNotificationMessage]=useState('Whoops, something went wrong here xD')
 
 const showNotif = (message) => {
   setIsNotifMenuActive(true);
+  console.log('====================================');
+  console.log('====================================');
+  console.log(message.title);
   console.log('====================================');
   setNotificationMessage(message);
   console.log('====================================');
@@ -77,8 +96,8 @@ const addNewIncome = (newIncomeData) => {
   <div className='absolute w-2/4 left-1/4 top-[85%] h-auto z-50 bg-purple rounded-md centerPlz p-5'>
 
 
-    <p>Income Updated !</p>
-    <p>{notificationMesage}</p>
+    <p>{notificationMesage.title}</p>
+    <p>{notificationMesage.message}</p>
   
   </div>
 }
@@ -134,7 +153,7 @@ const addNewIncome = (newIncomeData) => {
 
   </div>
 
-  <Income incomeArray={income} onAddIncome={addNewIncome} onEditIncome={editIncomeItem} onNotif={showNotif}/>
+  <Income incomeArray={income} onAddIncome={addNewIncome} onEditIncome={editIncomeItem} onNotif={showNotif} incomeHistoryArray={incomeHistory}/>
   <Expenses/>
  
   <Graph/>
