@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Chart, PieController, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Chart, PieController, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from 'chart.js';
+import { Bar } from 'react-chartjs-2';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus,faPencil } from '@fortawesome/free-solid-svg-icons';
 
@@ -8,6 +10,15 @@ import { faPlus,faPencil } from '@fortawesome/free-solid-svg-icons';
 import '../App.css';
 
 Chart.register(PieController, ArcElement, Tooltip, Legend);
+Chart.register(
+  PieController,
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  BarElement
+);
 
 function Income({ incomeArray, onAddIncome ,onEditIncome,onNotif, incomeHistoryArray,onAddIncomeHistory,newlyAddedId}) {
 
@@ -158,10 +169,48 @@ return  <ul className='text-xs ps-2 p-3'>
 </ul>
 
 }
-{/* <li 
-  className={`transition-opacity duration-700 ease-in-out ${historyItem.id === newlyAddedId ? 'opacity-100' : 'opacity-0'}`}
-  key={index}
-></li> */}
+// function OverallComponent(){
+//   return <h1>Overall Component</h1>
+  
+//   }
+
+  function OverallComponent() {
+    const data = {
+        labels: ['January', 'February', 'March', 'April'],
+        datasets: [
+            {
+                label: 'Monthly Sales',
+                data: [50, 60, 70, 80],
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+                borderRadius: 5,  // Set border radius here
+                borderSkipped: false,
+            }
+        ],
+    };
+
+    const options = {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+            title: {
+                display: true,
+                text: 'Monthly Sales Data',
+            },
+        },
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    };
+
+    return <Bar data={data} options={options} />;
+}
+
 //this belkow components is the History for the user/ the overview components which has a brewakdown of recent activity within the income/expenses array.
 function ActivityComponent() {
   return (
@@ -183,7 +232,15 @@ function ActivityComponent() {
   );
 }
 
-
+const renderComponent = () => {
+  if (incomeSectionNav === 'overview') {
+    return <OverviewComponent />;
+  } else if (incomeSectionNav === 'overall') {
+    return <OverallComponent />;
+  } else {
+    return <ActivityComponent />;
+  }
+};
 const incomeNavClickHandler=(section)=>{
 setIncomeSectionNav(section)
 }
@@ -208,8 +265,9 @@ setIncomeSectionNav(section)
 <div className='dark:bg-base-200 bg-white row-span-4  m-4 rounded-md overflow-auto'>
 
 <div className="overflow-x-auto overflow-y-scroll always-show-scrollbar ">
-  <div className='grid grid-cols-2 grid-rows-1 p-4'>
+  <div className='grid grid-cols-3 grid-rows-1 p-4'>
 <button onClick={()=>{incomeNavClickHandler('overview')}}  className={`col-span-1 btn  ${incomeSectionNav ==='overview' ? "btn-neutral" : "btn-ghost"} btn-xs `}>Overview</button>
+<button onClick={()=>{incomeNavClickHandler('overall')}} className={`col-span-1 btn  ${incomeSectionNav ==='overall' ? "btn-neutral" : "btn-ghost"} btn-xs `}>Overall</button>
 <button onClick={()=>{incomeNavClickHandler('history')}} className={`col-span-1 btn  ${incomeSectionNav ==='history' ? "btn-neutral" : "btn-ghost"} btn-xs `}>History</button>
 
   </div>
@@ -218,11 +276,7 @@ setIncomeSectionNav(section)
 //consitionaly rendering the overview/history components based on the users selection on above nav
 
 
-incomeSectionNav === 'overview'?(
-  <OverviewComponent/>
-):(
-  <ActivityComponent/>
-)
+renderComponent()
 }
 
 

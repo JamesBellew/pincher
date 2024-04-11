@@ -11,4 +11,9 @@
   .always-show-scrollbar {
     scrollbar-width: thin; /* For Firefox */
   }
+  #overallChart {
+    width: 100%;
+    max-width: 600px;
+    height: 400px; /* or any other height */
+  }
   
