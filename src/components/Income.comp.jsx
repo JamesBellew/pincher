@@ -1,13 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Chart, PieController, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-
+import { Line } from 'react-chartjs-2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus,faPencil } from '@fortawesome/free-solid-svg-icons';
+import { Chart as ChartJS, LineElement, PointElement } from 'chart.js';
 
 
 
 import '../App.css';
+ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement);
 
 Chart.register(PieController, ArcElement, Tooltip, Legend);
 Chart.register(
@@ -169,6 +171,68 @@ return  <ul className='text-xs ps-2 p-3'>
 </ul>
 
 }
+function OverallComponent() {
+  const data = {
+      labels: ['January', 'February', 'March', 'April', 'May'],
+      datasets: [
+          {
+              label: 'Savings',
+              data: [1000, 2500, 3200, 5000, 6500],
+              backgroundColor: 'rgba(75, 192, 192, 0.2)',
+              borderColor: 'rgba(75, 192, 192, 1)',
+              borderWidth: 1,
+              borderRadius: 20,  // Enhanced border radius
+              borderSkipped: false,
+          }
+      ],
+  };
+
+  const options = {
+      responsive: true,
+      plugins: {
+          legend: {
+              position: 'top',
+          },
+          title: {
+              display: true,
+              text: 'Monthly Savings Data',
+          },
+      },
+      scales: {
+          y: {
+              beginAtZero: true
+          }
+      }
+  };
+
+  return <Bar data={data} options={options} />;
+}
+
+function LineChartComponent() {
+  const data = {
+      labels: ['January', 'February', 'March', 'April', 'May','June','July'],
+      datasets: [
+          {
+              label: 'Growth',
+              data: [2500, 2950, 3200, 4250, 5000,5500, 8500],
+              borderColor: '#007bff',
+              backgroundColor: 'rgba(0, 123, 255, 0.5)',
+              tension: 0.4 // Adjust this value for different interpolation (0 for straight lines)
+          }
+      ]
+  };
+
+  const options = {
+      scales: {
+          y: {
+              beginAtZero: true
+          }
+      }
+  };
+
+  return <Line data={data} options={options} />;
+}
+
 // function OverallComponent(){
 //   return <h1>Overall Component</h1>
   
@@ -176,11 +240,11 @@ return  <ul className='text-xs ps-2 p-3'>
 
   function OverallComponent() {
     const data = {
-        labels: ['January', 'February', 'March', 'April'],
+        labels: ['January', 'February', 'March', 'April','May'],
         datasets: [
             {
-                label: 'Monthly Sales',
-                data: [50, 60, 70, 80],
+                label: 'Savings',
+                data: [1000, 2500, 3200, 5000,6500],
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
                 borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 1,
@@ -237,7 +301,12 @@ const renderComponent = () => {
     return <OverviewComponent />;
   } else if (incomeSectionNav === 'overall') {
     return <OverallComponent />;
-  } else {
+  }
+  else if (incomeSectionNav === 'chart') {
+    return <LineChartComponent />;
+  }
+  
+  else {
     return <ActivityComponent />;
   }
 };
@@ -265,11 +334,11 @@ setIncomeSectionNav(section)
 <div className='dark:bg-base-200 bg-white row-span-4  m-4 rounded-md overflow-auto'>
 
 <div className="overflow-x-auto overflow-y-scroll always-show-scrollbar ">
-  <div className='grid grid-cols-3 grid-rows-1 p-4'>
+  <div className='grid grid-cols-4 grid-rows-1 p-4'>
 <button onClick={()=>{incomeNavClickHandler('overview')}}  className={`col-span-1 btn  ${incomeSectionNav ==='overview' ? "btn-neutral" : "btn-ghost"} btn-xs `}>Overview</button>
 <button onClick={()=>{incomeNavClickHandler('overall')}} className={`col-span-1 btn  ${incomeSectionNav ==='overall' ? "btn-neutral" : "btn-ghost"} btn-xs `}>Overall</button>
 <button onClick={()=>{incomeNavClickHandler('history')}} className={`col-span-1 btn  ${incomeSectionNav ==='history' ? "btn-neutral" : "btn-ghost"} btn-xs `}>History</button>
-
+<button onClick={()=>{incomeNavClickHandler('chart')}} className={`col-span-1 btn  ${incomeSectionNav ==='chart' ? "btn-neutral" : "btn-ghost"} btn-xs `}>Chart</button>
   </div>
 {
 
