@@ -36,7 +36,7 @@ const [newIncomeAmount,setNewIncomeAmount]=useState(0)
 const [isFormValid, setIsFormValid] = useState(false);
 const [isEditIncomeModalActive,setIsEditIncomeModalActive] = useState(false)
 const [incomeSelectedForEdit,setIncomeSelectedForEdit] = useState(incomeArray[0])
-
+const [highlight, setHighlight] = useState(false);
 
 
  // Toggle modal visibility
@@ -113,10 +113,16 @@ const saveIncomeEditHandler=()=>{
 
   },[incomeArray])
 
-  useEffect(()=>{
+  useEffect(() => {
     const totalStreams = incomeArray.length;
-    setTotalIncomeStreams(totalStreams)
-  },[incomeArray])
+    if (totalStreams !== totalIncomeStreams) {
+        setTotalIncomeStreams(totalStreams);
+        setHighlight(true); // Activate highlight when number of streams changes
+        setTimeout(() => {
+            setHighlight(false); // Remove highlight after 2 seconds
+        }, 2000);
+    }
+}, [incomeArray]); 
   useEffect(() => {
     const ctx = chartRef.current.getContext('2d');
 
@@ -337,8 +343,9 @@ setIncomeSectionNav(section)
   <div className='grid grid-cols-4 grid-rows-1 p-4'>
 <button onClick={()=>{incomeNavClickHandler('overview')}}  className={`col-span-1 btn  ${incomeSectionNav ==='overview' ? "btn-neutral" : "btn-ghost"} btn-xs `}>Overview</button>
 <button onClick={()=>{incomeNavClickHandler('overall')}} className={`col-span-1 btn  ${incomeSectionNav ==='overall' ? "btn-neutral" : "btn-ghost"} btn-xs `}>Overall</button>
-<button onClick={()=>{incomeNavClickHandler('history')}} className={`col-span-1 btn  ${incomeSectionNav ==='history' ? "btn-neutral" : "btn-ghost"} btn-xs `}>History</button>
 <button onClick={()=>{incomeNavClickHandler('chart')}} className={`col-span-1 btn  ${incomeSectionNav ==='chart' ? "btn-neutral" : "btn-ghost"} btn-xs `}>Chart</button>
+<button onClick={()=>{incomeNavClickHandler('history')}} className={`col-span-1 btn  ${incomeSectionNav ==='history' ? "btn-neutral" : "btn-ghost"} btn-xs `}>History</button>
+
   </div>
 {
 
@@ -361,21 +368,26 @@ renderComponent()
   <>
     <div onClick={incomeClickHandler} className='fixed inset-0 w-full h-full bg-base-200/75 flex items-center justify-center z-50'>
       {/* Stop propagation onClick inside the modal content to prevent the backdrop handler from firing */}
-      <div className='bg-base-100  px-20 p-8 m-4 rounded-md text-white max-w-lg mx-auto ' onClick={(e) => e.stopPropagation()}>
+      <div className='bg-base-100  px-36 text-center p-16 m-4 rounded-md text-white max-w-lg mx-auto ' onClick={(e) => e.stopPropagation()}>
   
-      <div className="mt-2 w-[25%] mb-4 h-1 rounded-md bg-tahiti"></div>
+      <div className="mt-2 w-[10%] mx-auto relative mb-4 h-1 rounded-md bg-tahiti"></div>
+
+      {incomeArray.map((income) => (
+    <div className='inline-block bg-purple w-5 h-2 m-2'>
+    </div>
+  ))}
         <p>{incomeSelectedForEdit.name}</p>
    
         <input
       type="number"
       value={IncomeEditValue} // Bind state to input
       onChange={handleChange} // Handle changes
-      className="input input-bordered w-full max-w-xs my-2"
+      className="input text-center mt-5 input-bordered  max-w-xs my-2"
       min={0} // Minimum value
       step={100} // Step value
     />
-    
-        <button className='btn btn-purple bg-purple text-white mt-5 mx-5' onClick={saveIncomeEditHandler}>Save</button>
+    <br></br>
+        <button className='btn btn-purple bg-purple text-white mt-12 mr-5' onClick={saveIncomeEditHandler}>Save</button>
         <button className='btn btn-base-200 mt-5' onClick={incomeClickHandler}>Close</button>
         {/* Add more content or buttons here */}
       </div>
@@ -460,8 +472,11 @@ className='px-2 overflow-y-scroll col-span-5  always-show-scrollbar text-left'>
   
 </ul>
 <div className='col-span-3 grid  grid-cols-3 p-1 gap-1 rounded-md'>
-<div className='col-span-1 rounded-md shadow-md text-center flex flex-col items-center justify-center cursor-pointer'>
-<h2 className='text-tahiti'>{totalIncomeStreams}</h2><p className='text-xs'>Streams</p></div>
+<div className={`col-span-1 transition-all ${highlight ? 'bg-purple/15' : ''} rounded-md shadow-md text-center flex flex-col items-center justify-center cursor-pointer`}>
+<h2 className={`text-tahiti ${highlight ? 'text-xl' : ''}`}>{totalIncomeStreams}</h2>
+            <p className="text-xs">Streams</p>
+
+</div>
 <div className='col-span-1 rounded-md shadow-md text-center flex flex-col items-center justify-center cursor-pointer'>
 <h2 className='text-tahiti'>28%</h2><p className='text-xs'>YTD</p></div>
 <div className='col-span-1 rounded-md shadow-md text-center flex flex-col items-center justify-center cursor-pointer'> 

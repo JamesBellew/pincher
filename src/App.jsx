@@ -52,6 +52,33 @@ const [incomeHistory,setIncomeHistory]= useState([
     figureChange:-50
   }
 ])
+const[monthlyIncomeHistory,setMonthlyIncomeHistory] = useState([
+  {
+    id:0,
+    month:'January',
+    amount:500
+  },
+  {
+    id:1,
+    month:'February',
+    amount:1500
+  },
+  {
+    id:2,
+    month:'March',
+    amount:3500
+  },
+  {
+    id:3,
+    month:'April',
+    amount:8500
+  },
+])
+
+
+
+
+
 
 const [isNotifMenuActive,setIsNotifMenuActive] = useState(false)
 const [notificationMesage,setNotificationMessage]=useState('Whoops, something went wrong here xD')
