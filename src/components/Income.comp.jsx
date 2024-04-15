@@ -35,7 +35,7 @@ const [newIncomeName,setNewIncomeName]=useState('test')
 const [newIncomeAmount,setNewIncomeAmount]=useState(0)
 const [isFormValid, setIsFormValid] = useState(false);
 const [isEditIncomeModalActive,setIsEditIncomeModalActive] = useState(false)
-const [incomeSelectedForEdit,setIncomeSelectedForEdit] = useState(incomeArray[0])
+const [incomeSelectedForEdit,setIncomeSelectedForEdit] = useState()
 const [highlight, setHighlight] = useState(false);
 
 
@@ -243,7 +243,13 @@ function LineChartComponent() {
 //   return <h1>Overall Component</h1>
   
 //   }
-
+const modalNavClickHandler = ()=>{
+  console.log('====================================');
+  console.log("clcick ya boya");
+  console.log(incomeSelectedForEdit.id);
+  console.log('====================================');
+  setIncomeSelectedForEdit(incomeArray[incomeSelectedForEdit.id+1])
+}
   function OverallComponent() {
     const data = {
         labels: ['January', 'February', 'March', 'April','May'],
@@ -368,19 +374,22 @@ renderComponent()
   <>
     <div onClick={incomeClickHandler} className='fixed inset-0 w-full h-full bg-base-200/75 flex items-center justify-center z-50'>
       {/* Stop propagation onClick inside the modal content to prevent the backdrop handler from firing */}
-      <div className='bg-base-100  px-36 text-center p-16 m-4 rounded-md text-white max-w-lg mx-auto ' onClick={(e) => e.stopPropagation()}>
-  
-      <div className="mt-2 w-[10%] mx-auto relative mb-4 h-1 rounded-md bg-tahiti"></div>
+      <div className='bg-base-100  text-center p-16 m-4 rounded-md text-white w-auto max-w-lg mx-auto ' onClick={(e) => e.stopPropagation()}>
+
 
       {incomeArray.map((income) => (
-    <div className='inline-block bg-purple w-5 h-2 m-2'>
+    <div className='inline-block bg-base-300 w-5 h-2 mx-1 mb-5'>
     </div>
   ))}
-        <p>{incomeSelectedForEdit.name}</p>
+<br></br>
+  <button className='bg-tahiti p-2 rounded-md ' onClick={modalNavClickHandler}>Next</button>
+  <br></br>
+  <br></br>
+        <p className='border-b-tahiti p-1 border-b-2'>{incomeSelectedForEdit.name}</p>
    
         <input
       type="number"
-      value={IncomeEditValue} // Bind state to input
+      value={incomeSelectedForEdit.amount} // Bind state to input
       onChange={handleChange} // Handle changes
       className="input text-center mt-5 input-bordered  max-w-xs my-2"
       min={0} // Minimum value

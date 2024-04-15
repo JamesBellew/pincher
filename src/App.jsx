@@ -13,21 +13,21 @@ function App() {
   const [income, setIncome] = useState([
     
   {
-  id:1,
+  id:0,
   name:'Bank Account (Current Account)',
   amount:2500,
   color:'#3f3f3f',
   icon:'&#9872;'
   },
   {
-    id:2,
+    id:1,
     name:'Trading 212 (Stocks)',
     amount:2500,
     color:'#3f3f3f',
     icon:'&#9872;'
     },
     {
-      id:3,
+      id:2,
       name:'Credit Union (Main Account)',
       amount:3500,
       color:'#3f3f3f',
