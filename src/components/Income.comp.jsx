@@ -3,7 +3,7 @@ import { Chart, PieController, ArcElement, Tooltip, Legend, CategoryScale, Linea
 import { Bar } from 'react-chartjs-2';
 import { Line } from 'react-chartjs-2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus,faPencil } from '@fortawesome/free-solid-svg-icons';
+import { faPlus,faPencil,faArrowLeft,faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { Chart as ChartJS, LineElement, PointElement } from 'chart.js';
 
 
@@ -34,9 +34,17 @@ function Income({ incomeArray, onAddIncome ,onEditIncome,onNotif, incomeHistoryA
 const [newIncomeName,setNewIncomeName]=useState('test')
 const [newIncomeAmount,setNewIncomeAmount]=useState(0)
 const [isFormValid, setIsFormValid] = useState(false);
+const [originalIncomeEditAmountFigure,setOriginalIncomeEditAmountFigure] = useState(0)
+const [updatedIncomeEditAmountFigure,setUpdatedIncomeEditAmountFigure] = useState(0)
+const [isEditValueTouched,setIsEditValueTouched] = useState(false)
 const [isEditIncomeModalActive,setIsEditIncomeModalActive] = useState(false)
-const [incomeSelectedForEdit,setIncomeSelectedForEdit] = useState()
-const [highlight, setHighlight] = useState(false);
+
+const [incomeSelectedForEdit, setIncomeSelectedForEdit] = useState({
+  id: null,
+  name: '',
+  amount: 12500  // Assuming this is your initial amount
+});
+const [highlight, setHighlight] = useState(false); 
 
 
  // Toggle modal visibility
@@ -45,24 +53,33 @@ const [highlight, setHighlight] = useState(false);
  const [IncomeEditValue, setIncomeSelectedEditValue] = useState(12500); // Set the initial value
 
  const handleChange = (e) => {
-  setIncomeSelectedEditValue(e.target.value); // Update state with new value
- };
+
+  const updatedIncome = {...incomeSelectedForEdit, amount: e.target.value};
+  setIncomeSelectedForEdit(updatedIncome); // Update the nested state
+  //want to set the is edit value to true so that the figure shows up when enetrgin the new value 
+  setIsEditValueTouched(true)
+//this is to update the new income edit usetstae amount
+setUpdatedIncomeEditAmountFigure(e.target.value)
+};
   // Validation check function
   const validateForm = () => {
     return newIncomeName.trim() !== '' && parseFloat(newIncomeAmount) > 0;
   };
   
 const incomeClickHandler=(income)=>{
+
   setIncomeSelectedForEdit(income)
   setIncomeSelectedEditValue(income.amount)
   setIsEditIncomeModalActive(!isEditIncomeModalActive)
-
+      //this below is to show the original figure on top of the input when entering the new figure 
+setOriginalIncomeEditAmountFigure(income.amount)
+outerModalClickHanlder()
 
 }
 const saveIncomeEditHandler=()=>{
   setIsEditIncomeModalActive(!isEditIncomeModalActive)
   onNotif({title:"Income Changed",message:'Changed the figure of ' + incomeSelectedForEdit.name + " from £" + incomeSelectedForEdit.amount + " to £" + IncomeEditValue})
-  onEditIncome(incomeSelectedForEdit.id, +IncomeEditValue);
+  onEditIncome(incomeSelectedForEdit.id, +incomeSelectedForEdit.amount);
   onAddIncomeHistory( {incomeName:incomeSelectedForEdit.name,
   date:'17/05/2024',
   figureChange:+IncomeEditValue-incomeSelectedForEdit.amount})
@@ -80,6 +97,12 @@ const saveIncomeEditHandler=()=>{
       // Check if form is valid after the update
       setIsFormValid(validateForm());
   };
+
+const outerModalClickHanlder = ()=>{
+  e.stopPropagation(); // Prevents the click event from bubbling up to parent elements
+  setIsEditValueTouched(false); // Sets the state to false
+}
+
 
   const handleSubmit = () => {
     const newIncomeData = {
@@ -239,16 +262,36 @@ function LineChartComponent() {
   return <Line data={data} options={options} />;
 }
 
-// function OverallComponent(){
-//   return <h1>Overall Component</h1>
-  
-//   }
-const modalNavClickHandler = ()=>{
-  console.log('====================================');
-  console.log("clcick ya boya");
-  console.log(incomeSelectedForEdit.id);
-  console.log('====================================');
-  setIncomeSelectedForEdit(incomeArray[incomeSelectedForEdit.id+1])
+const modalNavClickHandlerPrev = ()=>{
+  //first I need to check if the user is on the first index to avoid hittin the array out of bounds error. I will throw them back to the last index if on the first idnex of the array
+
+  //grabbing the length of thw array. Must minus 1 because of the way array work by startying by 0 instead of 1
+  const lastIndexValue = incomeArray.length -1;
+
+if(incomeSelectedForEdit.id === 0){
+  //push it to the last index value of array
+  setIncomeSelectedForEdit(incomeArray[lastIndexValue])
+}else{
+  setIncomeSelectedForEdit(incomeArray[incomeSelectedForEdit.id-1])
+}
+
+}
+const modalTopNavBtnClickHandler = (navIndex)=>{
+  setIncomeSelectedForEdit(incomeArray[navIndex])
+}
+const modalNavClickHandlerNext = ()=>{
+    //first I need to check if the user is on the last index to avoid hittin the array out of bounds error. I will thwo them back to the first index if on the last idnex of the array
+
+    //grabbing the length of thw array. Must minus 1 because of the way array work by startying by 0 instead of 1
+    const lastIndexValue = incomeArray.length -1;
+
+  if(incomeSelectedForEdit.id === lastIndexValue){
+    //push it to the start value of array
+    setIncomeSelectedForEdit(incomeArray[0])
+  }else{
+    setIncomeSelectedForEdit(incomeArray[incomeSelectedForEdit.id+1])
+  }
+
 }
   function OverallComponent() {
     const data = {
@@ -373,32 +416,56 @@ renderComponent()
 {isEditIncomeModalActive && (
   <>
     <div onClick={incomeClickHandler} className='fixed inset-0 w-full h-full bg-base-200/75 flex items-center justify-center z-50'>
+      
       {/* Stop propagation onClick inside the modal content to prevent the backdrop handler from firing */}
-      <div className='bg-base-100  text-center p-16 m-4 rounded-md text-white w-auto max-w-lg mx-auto ' onClick={(e) => e.stopPropagation()}>
+      <div className='bg-base-100 relative text-center p-16 m-4 rounded-md text-white w-1/2 max-w-lg mx-auto '
+      
+      onClick={(e) => e.stopPropagation()}
+      // onClick={outerModalClickHanlder}
+      
+      >
+      <div className=' absolute h-1/5 bottom-1/4 w-10 left-0 m-5 my-auto flex items-center justify-center'>
+    <button className='btn btn-ghost shadow-md' onClick={modalNavClickHandlerPrev}><FontAwesomeIcon icon={faArrowLeft} /></button>
+</div>
+<div className=' absolute h-1/5 bottom-1/4 w-10 right-0 m-5 my-auto flex items-center justify-center'>
+    <button className='btn btn-ghost shadow-md' onClick={modalNavClickHandlerNext}><FontAwesomeIcon icon={faArrowRight} /></button>
+</div>
 
 
-      {incomeArray.map((income) => (
-    <div className='inline-block bg-base-300 w-5 h-2 mx-1 mb-5'>
-    </div>
+
+      {incomeArray.map((income, index) => (
+    <button onClick={()=> modalTopNavBtnClickHandler(index)} className={`${index === incomeSelectedForEdit.id ? "bg-tahiti" : " "}  rounded-md  inline-block bg-base-300 w-5 h-2 mx-1 mb-5`}>
+    </button>
   ))}
 <br></br>
-  <button className='bg-tahiti p-2 rounded-md ' onClick={modalNavClickHandler}>Next</button>
-  <br></br>
-  <br></br>
-        <p className='border-b-tahiti p-1 border-b-2'>{incomeSelectedForEdit.name}</p>
-   
+
+  
+        <p className='border-b-tahiti p-1 '>{incomeSelectedForEdit.name}</p>
+
+        {isEditValueTouched &&
+        <div className='calcs mt-2 w-3/5 mx-auto h-2 text-left flex justify-between p-2 items-center'>
+    <p className='text-xs'>{originalIncomeEditAmountFigure}</p>
+    <p className='text-xs text-tahiti'>£ {updatedIncomeEditAmountFigure - originalIncomeEditAmountFigure}</p>
+</div>
+}
+
+   {/* <p className='text-muted text-sm mt-5 max-w-xs text-left mx-24 text-tahiti'>2500</p>
+   <p className='text-muted text-sm mt-5 max-w-xs text-left mx-24 text-tahiti'>2500</p> */}
         <input
-      type="number"
-      value={incomeSelectedForEdit.amount} // Bind state to input
-      onChange={handleChange} // Handle changes
-      className="input text-center mt-5 input-bordered  max-w-xs my-2"
-      min={0} // Minimum value
-      step={100} // Step value
-    />
+  type="number"
+  value={incomeSelectedForEdit.amount}
+  onChange={handleChange}
+  className="input text-center  input-bordered max-w-xs my-2"
+  min={0}
+  step={100}
+/>
     <br></br>
-        <button className='btn btn-purple bg-purple text-white mt-12 mr-5' onClick={saveIncomeEditHandler}>Save</button>
+        <button className='btn btn-purple bg-purple text-white mt-5 mr-5' onClick={saveIncomeEditHandler}>Save</button>
         <button className='btn btn-base-200 mt-5' onClick={incomeClickHandler}>Close</button>
         {/* Add more content or buttons here */}
+        {/* <br></br>
+        <br></br> */}
+        {/* <button className='bg-tahiti p-2 rounded-md ' onClick={modalNavClickHandler}>Next</button> */}
       </div>
     </div>
   </>
