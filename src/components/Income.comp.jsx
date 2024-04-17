@@ -15,11 +15,21 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlus,
   faPencil,
+  faCoffee,
+  faMoneyBillWave,
+  faBolt,
+  faGamepad,
+  faPiggyBank,
+  faArrowTrendUp,
+  faCartShopping,
+  faComputer,
   faArrowLeft,
   faArrowRight,
+  faShoppingCart,
 } from "@fortawesome/free-solid-svg-icons";
 import { Chart as ChartJS, LineElement, PointElement } from "chart.js";
-
+import Select from "react-select";
+import { library } from "@fortawesome/fontawesome-svg-core";
 import "../App.css";
 ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement);
 
@@ -33,6 +43,9 @@ Chart.register(
   LinearScale,
   BarElement
 );
+
+// Add all icons to the library for easy reference
+library.add(faMoneyBillWave, faCoffee, faComputer);
 
 function Income({
   incomeArray,
@@ -58,8 +71,118 @@ function Income({
     useState(0);
   const [isEditValueTouched, setIsEditValueTouched] = useState(false);
   const [isEditIncomeModalActive, setIsEditIncomeModalActive] = useState(false);
+  const [newIncomeIcon, setNewIncomeIcon] = useState(null);
   const [isEditIncomeFormBtnValid, setIsEditIncomeFormBtnValid] =
     useState(false);
+  const [selectedOption, setSelectedOption] = React.useState(null);
+  // Define your options with icons
+  const options = [
+    {
+      value: "money-bill-wave",
+      label: (
+        <span>
+          <FontAwesomeIcon icon={faMoneyBillWave} />
+        </span>
+      ),
+    },
+    {
+      value: "coffee",
+      label: (
+        <span>
+          <FontAwesomeIcon icon={faCoffee} />
+        </span>
+      ),
+    },
+    {
+      value: "faComputer",
+      label: (
+        <span>
+          <FontAwesomeIcon icon={faComputer} />
+        </span>
+      ),
+    },
+    {
+      value: "piggyBank",
+      label: (
+        <span>
+          <FontAwesomeIcon icon={faPiggyBank} />
+        </span>
+      ),
+    },
+    {
+      value: "stonks",
+      label: (
+        <span>
+          <FontAwesomeIcon icon={faArrowTrendUp} />
+        </span>
+      ),
+    },
+    {
+      value: "shoppingCart",
+      label: (
+        <span>
+          <FontAwesomeIcon icon={faShoppingCart} />
+        </span>
+      ),
+    },
+    {
+      value: "bolt",
+      label: (
+        <span>
+          <FontAwesomeIcon icon={faBolt} />
+        </span>
+      ),
+    },
+    {
+      value: "controller",
+      label: (
+        <span>
+          <FontAwesomeIcon icon={faGamepad} />
+        </span>
+      ),
+    },
+    // Add more options as needed
+  ];
+
+  const customStyles = {
+    menuList: (provided, state) => ({
+      ...provided,
+      display: "flex",
+      flexWrap: "wrap", // Allow options to wrap onto the next line
+      backgroundColor: "#1d232a",
+      justifyContent: "start", // Align items to the start of the menu
+      color: "#3ab7bf",
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      flex: "1 1 20%", // Give each option a flex basis of 20%, adjust as needed
+      display: "flex",
+      justifyContent: "center",
+      backgroundColor: state.isSelected ? "#1d232a" : "#1d232a",
+      alignItems: "center",
+      margin: 5, // Add some margin between icons
+      height: "auto",
+      color: "#3ab7bf",
+    }),
+    control: (provided, state) => ({
+      ...provided,
+      minWidth: 300, // Set a minimum width for the control
+      backgroundColor: "#1d232a",
+      borderRadius: "10px",
+      borderWidth: "1px",
+      padding: "5px",
+      border: state.isFocused ? "1px solid #1d232a" : "1px solid #373f47", // thinner border, changing color on focus
+      color: "#3ab7bf",
+    }),
+    singleValue: (provided, state) => ({
+      ...provided,
+      display: "flex",
+      backgroundColor: "#1d232a",
+      justifyContent: "center",
+      alignItems: "center",
+      color: "#3ab7bf",
+    }),
+  };
 
   const [incomeSelectedForEdit, setIncomeSelectedForEdit] = useState({
     id: null,
@@ -236,6 +359,18 @@ function Income({
   }, [incomeArray]);
 
   const editIncomeItem = (income) => {};
+
+  //the below if the handler for selecting a incon when adding a new incom
+  const handleIconChange = (selectedOption) => {
+    setNewIncomeIcon(selectedOption.value);
+    console.log("====================================");
+    console.log(selectedOption);
+    console.log("====================================");
+    console.log(
+      "Selected icon:",
+      selectedOption ? selectedOption.value : "none"
+    );
+  };
 
   //this belkow components is the legend for the barcart/ the overview components which has a brewakdown of everythign withn the income array.
   function OverviewComponent() {
@@ -612,8 +747,8 @@ function Income({
             </>
           )}
 
-          <dialog id="my_modal_1" className="modal">
-            <div className="modal-box">
+          <dialog id="my_modal_1" className="modal h-full">
+            <div className="modal-box  h-[80%]">
               <h3 className="font-bold text-lg">Add New Income</h3>
               <br></br>
               <label className="input input-bordered flex items-center gap-2">
@@ -658,40 +793,29 @@ function Income({
                   Green
                 </option>
               </select>
-              <select className="select select-bordered w-full">
-                <option disabled selected>
-                  Choose a Icon
-                </option>
-
-                <option
-                  className="border-l-2 border-purple"
-                  style={{ backgroundColor: "#6B7280", color: "#FFFFFF" }}
-                >
-                  &#9762;
-                </option>
-                <option
-                  style={{ backgroundColor: "#EF4444", color: "#FFFFFF" }}
-                >
-                  Red
-                </option>
-                <option
-                  style={{ backgroundColor: "#10B981", color: "#FFFFFF" }}
-                >
-                  Green
-                </option>
-              </select>
-              <div className="modal-action">
+              <label className="label">Choose Icon</label>
+              <Select
+                value={selectedOption}
+                onChange={handleIconChange}
+                className="bg-base-200"
+                options={options}
+                styles={customStyles}
+              />
+              <p>{newIncomeIcon}</p>
+              {newIncomeIcon && <FontAwesomeIcon icon={newIncomeIcon} />}
+              <div className="modal-action flex flex-row items-center justify-center w-auto mt-28">
                 <button
                   onClick={handleSubmit}
                   disabled={!isFormValid}
                   className={`${
                     isFormValid ? "bg-primary" : "bg-gray-400 disabled"
-                  } text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline`}
+                  } text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mx-2`}
                 >
                   Add
                 </button>
-                <form method="dialog">
-                  <button className="btn">Close</button>
+
+                <form method="dialog" className="flex justify-center">
+                  <button className="btn mx-2">Close</button>
                 </form>
               </div>
             </div>
