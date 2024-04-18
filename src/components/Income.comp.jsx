@@ -62,7 +62,7 @@ function Income({
   const [legendItems, setLegendItems] = useState([]);
   const chartInstance = useRef(null); // Use this ref to keep track of the chart instance
   const [incomeSectionNav, setIncomeSectionNav] = useState("overview"); //this the usestate for the navigation for the income right hand side grid, it navigates between the overview and the history components. the two key words for valeus are overview and history
-  const [newIncomeName, setNewIncomeName] = useState("test");
+  const [newIncomeName, setNewIncomeName] = useState("");
   const [newIncomeAmount, setNewIncomeAmount] = useState(0);
   const [isFormValid, setIsFormValid] = useState(false);
   const [originalIncomeEditAmountFigure, setOriginalIncomeEditAmountFigure] =
@@ -72,6 +72,7 @@ function Income({
   const [isEditValueTouched, setIsEditValueTouched] = useState(false);
   const [isEditIncomeModalActive, setIsEditIncomeModalActive] = useState(false);
   const [newIncomeIcon, setNewIncomeIcon] = useState(null);
+  const [selectedColor, setSelectedColor] = useState("");
   const [isEditIncomeFormBtnValid, setIsEditIncomeFormBtnValid] =
     useState(false);
   const [selectedOption, setSelectedOption] = React.useState(null);
@@ -94,7 +95,7 @@ function Income({
       ),
     },
     {
-      value: "faComputer",
+      value: "computer",
       label: (
         <span>
           <FontAwesomeIcon icon={faComputer} />
@@ -110,7 +111,7 @@ function Income({
       ),
     },
     {
-      value: "stonks",
+      value: "arrowTrendUp",
       label: (
         <span>
           <FontAwesomeIcon icon={faArrowTrendUp} />
@@ -143,6 +144,66 @@ function Income({
     },
     // Add more options as needed
   ];
+
+  const colorOptions = [
+    {
+      value: "#3ab7bf",
+      label: (
+        <div
+          style={{ width: "100%", height: "100%", backgroundColor: "#3ab7bf" }}
+        ></div>
+      ),
+      title: "Green",
+    },
+    {
+      value: "#8182ff",
+      label: (
+        <div
+          style={{ width: "100%", height: "100%", backgroundColor: "#8182ff" }}
+        ></div>
+      ),
+      title: "#8182ff",
+    },
+    {
+      value: "yellow",
+      label: (
+        <div
+          style={{ width: "100%", height: "100%", backgroundColor: "yellow" }}
+        ></div>
+      ),
+      title: "Yellow",
+    },
+    // Add more colors as needed
+  ];
+
+  const handleColorChange = (selectedOption) => {
+    setSelectedColor(selectedOption);
+    console.log(
+      "Selected color:",
+      selectedOption ? selectedOption.value : "none"
+    );
+  };
+  const colorcustomStyles = {
+    menuList: (provided, state) => ({
+      ...provided,
+      display: "flex",
+      flexWrap: "wrap",
+      justifyContent: "start",
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      flex: "1 1 20%", // Adjust based on desired width of each color block
+      height: 40, // Set a fixed height for each color option
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      padding: 2,
+      backgroundColor: state.isSelected ? "#ccc" : "transparent", // Highlight if selected
+      ":hover": {
+        backgroundColor: "#eee", // Highlight on hover
+      },
+    }),
+  };
 
   const customStyles = {
     menuList: (provided, state) => ({
@@ -278,8 +339,8 @@ function Income({
       name: newIncomeName,
       // Convert amount to a number to ensure correct addition
       amount: +newIncomeAmount,
-      color: "#1a8ec7",
-      icon: "&#x1F4B8;",
+      color: selectedColor.toString,
+      icon: newIncomeIcon,
     };
     const modal = document.getElementById("my_modal_1");
     if (modal) modal.close(); // This will close the modal
@@ -771,29 +832,28 @@ function Income({
                   onChange={handleInputChange}
                 />
               </label>
-              <select className="select select-bordered w-full">
-                <option disabled selected>
-                  Choose a Color
-                </option>
 
-                <option
-                  className="border-l-2 border-purple"
-                  style={{ backgroundColor: "#6B7280", color: "#FFFFFF" }}
-                >
-                  Grey
-                </option>
-                <option
-                  style={{ backgroundColor: "#EF4444", color: "#FFFFFF" }}
-                >
-                  Red
-                </option>
-                <option
-                  style={{ backgroundColor: "#10B981", color: "#FFFFFF" }}
-                >
-                  Green
-                </option>
-              </select>
-              <label className="label">Choose Icon</label>
+              <div>
+                <label className="label">Color</label>
+                <Select
+                  value={selectedColor}
+                  onChange={handleColorChange}
+                  options={colorOptions}
+                  styles={colorcustomStyles}
+                  getOptionLabel={(option) => (
+                    <div
+                      title={option.title}
+                      style={{ width: "100%", height: "100%" }}
+                    >
+                      {option.label}
+                    </div>
+                  )}
+                  getOptionValue={(option) => option.value}
+                  className="bg-base-200" // Tailwind CSS class for background color
+                />
+              </div>
+
+              <label className="label">Icon</label>
               <Select
                 value={selectedOption}
                 onChange={handleIconChange}
@@ -801,9 +861,23 @@ function Income({
                 options={options}
                 styles={customStyles}
               />
-              <p>{newIncomeIcon}</p>
-              {newIncomeIcon && <FontAwesomeIcon icon={newIncomeIcon} />}
-              <div className="modal-action flex flex-row items-center justify-center w-auto mt-28">
+              <div className="w-auto rounded-md shadow-md h-auto p-10 text-center mt-10 bg-base-200/50">
+                {newIncomeIcon && (
+                  <span className="mr-1 text-tahiti">
+                    <FontAwesomeIcon icon={newIncomeIcon} />
+                  </span>
+                )}
+
+                {newIncomeName.length > 0 && (
+                  <span className="mr-1 "> {newIncomeName} </span>
+                )}
+
+                {newIncomeAmount > 0 && (
+                  <span className="mr-1 "> £{newIncomeAmount} </span>
+                )}
+              </div>
+
+              <div className="modal-action flex flex-row items-center justify-center w-auto mt-14">
                 <button
                   onClick={handleSubmit}
                   disabled={!isFormValid}
@@ -846,12 +920,20 @@ function Income({
                   key={income.id}
                   className="flex items-center bg-slate-100 shadow-md text-sm px-6 py-2 rounded-md cursor-pointer m-1"
                 >
-                  <div className="income-color-bar bg-tahiti rounded-lg w-10 h-1 mr-2"></div>
+                  <div
+                    className="income-color-bar rounded-full w-2 h-2 mr-2"
+                    style={{ backgroundColor: income.color }}
+                  ></div>
+
                   <span>
                     {" "}
                     <span className="mx-4">£{income.amount} </span>{" "}
-                    <span className="pr-4">-</span> {income.name}
+                    <span className="pr-4">
+                      {<FontAwesomeIcon icon={income.icon} />}
+                    </span>{" "}
+                    {income.name}
                   </span>
+                  <p>{income.color}</p>
                 </li>
               ))}
             </ul>
