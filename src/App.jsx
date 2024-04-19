@@ -19,8 +19,8 @@ function App() {
       id: 1,
       name: "Trading 212 (Stocks)",
       amount: 2500,
-      color: "#3ab7bf",
-      icon: "coffee",
+      color: "#8182ff",
+      icon: "computer",
     },
     {
       id: 2,

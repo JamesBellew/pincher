@@ -339,7 +339,7 @@ function Income({
       name: newIncomeName,
       // Convert amount to a number to ensure correct addition
       amount: +newIncomeAmount,
-      color: selectedColor.toString,
+      color: selectedColor.value,
       icon: newIncomeIcon,
     };
     const modal = document.getElementById("my_modal_1");
@@ -861,9 +861,15 @@ function Income({
                 options={options}
                 styles={customStyles}
               />
-              <div className="w-auto rounded-md shadow-md h-auto p-10 text-center mt-10 bg-base-200/50">
+              {selectedColor && (
+                <div
+                  className={` w-full relative h-1 mt-5 rounded-full`}
+                  style={{ backgroundColor: selectedColor.value }}
+                ></div>
+              )}
+              <div className="w-auto rounded-md shadow-md h-auto p-10 text-center mt-5 bg-base-200/50">
                 {newIncomeIcon && (
-                  <span className="mr-1 text-tahiti">
+                  <span className="mr-1 ">
                     <FontAwesomeIcon icon={newIncomeIcon} />
                   </span>
                 )}
@@ -894,16 +900,7 @@ function Income({
               </div>
             </div>
           </dialog>
-          {/*= <div className='grid mx-9 bg-tahiti'>
-  <div className='mb-2'>
-<button onClick={()=>document.getElementById('my_modal_1').showModal()} className=' bg-white shadow-md px-4 mx-2 rounded-md'> <FontAwesomeIcon icon={faPlus} /></button>
-<button className='px-4 bg-white shadow-md mx-1 rounded-md'><FontAwesomeIcon icon={faPencil} /></button>
-<button className='px-4 bg-silver mx-1'></button>
 
-
-  </div>
-
-</div> */}
           <div className="col-span-2 grid grid-cols-8 row-span-4 overflow-auto mb-7">
             <button
               onClick={() => document.getElementById("my_modal_1").showModal()}
@@ -933,7 +930,6 @@ function Income({
                     </span>{" "}
                     {income.name}
                   </span>
-                  <p>{income.color}</p>
                 </li>
               ))}
             </ul>
