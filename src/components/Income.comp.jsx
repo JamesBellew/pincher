@@ -26,6 +26,8 @@ import {
   faArrowLeft,
   faArrowRight,
   faShoppingCart,
+  faCircleCheck,
+  faCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { Chart as ChartJS, LineElement, PointElement } from "chart.js";
 import Select from "react-select";
@@ -73,6 +75,11 @@ function Income({
   const [isEditIncomeModalActive, setIsEditIncomeModalActive] = useState(false);
   const [newIncomeIcon, setNewIncomeIcon] = useState(null);
   const [selectedColor, setSelectedColor] = useState("");
+  //form validation usestates for adding income start
+  const [isNewIncomeNameValid, setIsNewIncomeNameValid] = useState(false);
+  const [isNewIncomeAmountValid, setIsNewIncomeAmountValid] = useState(false);
+  //end
+
   const [isEditIncomeFormBtnValid, setIsEditIncomeFormBtnValid] =
     useState(false);
   const [selectedOption, setSelectedOption] = React.useState(null);
@@ -165,15 +172,79 @@ function Income({
       title: "#8182ff",
     },
     {
-      value: "yellow",
+      value: "#d180ff",
       label: (
         <div
-          style={{ width: "100%", height: "100%", backgroundColor: "yellow" }}
+          style={{ width: "100%", height: "100%", backgroundColor: "#d180ff" }}
         ></div>
       ),
-      title: "Yellow",
+      title: "#d180ff",
     },
     // Add more colors as needed
+    {
+      value: "#3a86ff",
+      label: (
+        <div
+          style={{ width: "100%", height: "100%", backgroundColor: "#3a86ff" }}
+        ></div>
+      ),
+      title: "#3a86ff",
+    },
+    {
+      value: "#fb5607",
+      label: (
+        <div
+          style={{ width: "100%", height: "100%", backgroundColor: "#fb5607" }}
+        ></div>
+      ),
+      title: "#fb5607",
+    },
+    {
+      value: "#ffbe0b",
+      label: (
+        <div
+          style={{ width: "100%", height: "100%", backgroundColor: "#ffbe0b" }}
+        ></div>
+      ),
+      title: "#ffbe0b",
+    },
+    {
+      value: "#8ecae6",
+      label: (
+        <div
+          style={{ width: "100%", height: "100%", backgroundColor: "#8ecae6" }}
+        ></div>
+      ),
+      title: "#8ecae6",
+    },
+    //
+    {
+      value: "#219ebc",
+      label: (
+        <div
+          style={{ width: "100%", height: "100%", backgroundColor: "#219ebc" }}
+        ></div>
+      ),
+      title: "#219ebc",
+    },
+    {
+      value: "#023047",
+      label: (
+        <div
+          style={{ width: "100%", height: "100%", backgroundColor: "#023047" }}
+        ></div>
+      ),
+      title: "#023047",
+    },
+    {
+      value: "#2a9d8f",
+      label: (
+        <div
+          style={{ width: "100%", height: "100%", backgroundColor: "#2a9d8f" }}
+        ></div>
+      ),
+      title: "#2a9d8f",
+    },
   ];
 
   const handleColorChange = (selectedOption) => {
@@ -188,7 +259,19 @@ function Income({
       ...provided,
       display: "flex",
       flexWrap: "wrap",
+      backgroundColor: "#1d232a",
       justifyContent: "start",
+    }),
+
+    control: (provided, state) => ({
+      ...provided,
+      minWidth: 300, // Set a minimum width for the control
+      backgroundColor: "#1d232a",
+      borderRadius: "10px",
+      borderWidth: "1px",
+      padding: "5px",
+      border: state.isFocused ? "1px solid #1d232a" : "1px solid #373f47", // thinner border, changing color on focus
+      color: "#3ab7bf",
     }),
     option: (provided, state) => ({
       ...provided,
@@ -196,6 +279,7 @@ function Income({
       height: 40, // Set a fixed height for each color option
       display: "flex",
       justifyContent: "center",
+      backgroundColor: "#1d232a",
       alignItems: "center",
       padding: 2,
       backgroundColor: state.isSelected ? "#ccc" : "transparent", // Highlight if selected
@@ -320,9 +404,19 @@ function Income({
 
   // Handler for input changes
   const handleInputChange = (e) => {
+    if (e.target.name === "amount" && e.target.value > 0) {
+      setIsNewIncomeAmountValid(true);
+    } else {
+      setIsNewIncomeAmountValid(false);
+    }
     const { name, value } = e.target;
     if (name === "name") {
       setNewIncomeName(value);
+      if (newIncomeName.length > 1) {
+        setIsNewIncomeNameValid(true);
+      } else {
+        setIsNewIncomeNameValid(false);
+      }
     } else if (name === "amount") {
       setNewIncomeAmount(value);
     }
@@ -809,10 +903,18 @@ function Income({
           )}
 
           <dialog id="my_modal_1" className="modal h-full">
-            <div className="modal-box  h-[80%]">
+            <div className="modal-box   h-[80%]">
               <h3 className="font-bold text-lg">Add New Income</h3>
               <br></br>
               <label className="input input-bordered flex items-center gap-2">
+                {isNewIncomeNameValid && (
+                  <div className="">
+                    <FontAwesomeIcon
+                      className="text-tahiti"
+                      icon={faCircleCheck}
+                    ></FontAwesomeIcon>{" "}
+                  </div>
+                )}
                 Name :
                 <input
                   type="text"
@@ -823,6 +925,14 @@ function Income({
                 />
               </label>
               <label className="input input-bordered flex items-center gap-2">
+                {isNewIncomeAmountValid && (
+                  <div className="">
+                    <FontAwesomeIcon
+                      className="text-tahiti"
+                      icon={faCircleCheck}
+                    ></FontAwesomeIcon>{" "}
+                  </div>
+                )}
                 Amount :
                 <input
                   type="number"
