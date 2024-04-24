@@ -7,6 +7,7 @@ import Expenses from "./components/expenses.comp";
 import Graph from "./components/Graph.comp";
 
 function App() {
+  //Income Arrays
   const [income, setIncome] = useState([
     {
       id: 0,
@@ -66,7 +67,28 @@ function App() {
       amount: 8500,
     },
   ]);
+  //expenses Arrays
+  const [expenses, setExpenses] = useState([
+    {
+      id: 0,
+      name: "Car Loan",
+      amount: 450,
+      category: "Loans",
+      color: "#3ab7bf",
+      icon: "coffee",
+    },
+    {
+      id: 1,
+      name: "Spotify",
+      amount: 5.5,
+      category: "Subscriptions",
+      color: "#3ab7bf",
+      icon: "computer",
+    },
+  ]);
+  const [expensesCategories, setExpensesCategories] = useState([{}]);
 
+  //usestates Consts
   const [isNotifMenuActive, setIsNotifMenuActive] = useState(false);
   const [notificationMesage, setNotificationMessage] = useState(
     "Whoops, something went wrong here xD"
@@ -225,7 +247,10 @@ function App() {
             onAddIncomeHistory={addIncomeHistory}
             newlyAddedId={newlyAddedHistoryId}
           />
-          <Expenses />
+          <Expenses
+            expensesArray={expenses}
+            expensesCategoriesArray={expensesCategories}
+          />
 
           <Graph />
         </div>
