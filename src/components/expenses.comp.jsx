@@ -7,16 +7,19 @@ function Expenses() {
         <div class="grid grid-cols-1 pt-5 gap-4">
           <div className=" text-white text-lg text-center p-2">
             £6500 <br></br>
-            <select className=" p-1 rounded-md mt-1  shadow-sm cursor-pointer">
+            {/* <select className=" absolute  p-1 rounded-md mt-1  shadow-sm cursor-pointer">
               <option disabled selected>
                 Monthly
               </option>
               <option>Yearly</option>
               <option>Weekly</option>
-            </select>
+            </select> */}
           </div>
         </div>
-        <div class="grid grid-cols-3  gap-2 m-4">
+        <div class="grid grid-cols-3  gap-2 m-6">
+          <button className="absolute w-7 h-7 translate-y-[-10px] translate-x-[-15px] rounded-full bg-tahiti text-center text-white">
+            +
+          </button>
           <div className="p-4 col-span-1 rounded-md bg-base-100/50 shadow-md  text-center">
             <p>£2500</p>
             <p>Entertainment</p>
@@ -42,7 +45,7 @@ function Expenses() {
             <p>Subscriptions</p>
           </div>
         </div>
-        <div className="expensesArrayDiv  w-[90%] mx-auto mt-10">
+        <div className="expensesArrayDiv max-h-44  overflow-auto  w-[90%] mx-auto mt-10">
           <button className="absolute w-7 h-7 translate-y-[-10px] rounded-full bg-tahiti text-center text-white">
             +
           </button>
