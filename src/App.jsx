@@ -102,7 +102,23 @@ function App() {
       icon: "computer",
     },
   ]);
-  const [expensesCategories, setExpensesCategories] = useState([{}]);
+  const [expensesCategories, setExpensesCategories] = useState([
+    {
+      id: 0,
+      name: "Subscriptions",
+      amount: 0,
+    },
+    {
+      id: 1,
+      name: "Loans",
+      amount: 0,
+    },
+    {
+      id: 2,
+      name: "Car",
+      amount: 0,
+    },
+  ]);
 
   //usestates Consts
   const [isNotifMenuActive, setIsNotifMenuActive] = useState(false);
