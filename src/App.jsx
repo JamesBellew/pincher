@@ -101,6 +101,14 @@ function App() {
       color: "#3ab7bf",
       icon: "computer",
     },
+    {
+      id: 4,
+      name: "Groceries",
+      amount: 75,
+      category: "Day to Day",
+      color: "#3ab7bf",
+      icon: "computer",
+    },
   ]);
   const [expensesCategories, setExpensesCategories] = useState([
     {
@@ -115,7 +123,12 @@ function App() {
     },
     {
       id: 2,
-      name: "Car",
+      name: "Travel",
+      amount: 0,
+    },
+    {
+      id: 3,
+      name: "Day to Day",
       amount: 0,
     },
   ]);
