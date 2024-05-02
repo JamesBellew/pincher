@@ -5,6 +5,7 @@ function Expenses({ expensesArray, expensesCategoriesArray }) {
   const [showExpenseCategoriesComp, setShowExpenseCategoriesComp] =
     useState(true);
   const [showExpenseListComp, setShowExpenseListComp] = useState(true);
+  const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
 
   //want to get the total figures for the categories somehow :L
   // Using .reduce() to sum expenses by category
@@ -24,11 +25,19 @@ function Expenses({ expensesArray, expensesCategoriesArray }) {
   const expenseListBtnHandler = () => {
     setShowExpenseListComp(!showExpenseListComp);
   };
-
+  const addNewExpenseHandler = () => {
+    setShowAddExpenseModal(true);
+  };
+  const addModalClose = () => {
+    setShowAddExpenseModal(false);
+  };
   function ExpensesListComp() {
     return (
       <>
-        <button className="absolute w-7 h-7  top-2 right-5 rounded-full bg-tahiti text-center text-white">
+        <button
+          onClick={addNewExpenseHandler}
+          className="absolute w-7 h-7  top-2 right-5 rounded-full bg-tahiti text-center text-white"
+        >
           +
         </button>
         {expensesArray.map((expense) => {
@@ -66,7 +75,53 @@ function Expenses({ expensesArray, expensesCategoriesArray }) {
 
   return (
     <>
-      <div className="md:h-[80vh] h-[85vh] dark:bg-base-200 bg-white col-span-2 md:col-span-2 rounded-md">
+      <div className="md:h-[80vh] h-[85vh] dark:bg-base-200 bg-white relative  col-span-2 md:col-span-2 rounded-md">
+        {/* add new expense Modal */}
+        {showAddExpenseModal && (
+          <div
+            className="absolute bg-base-200/95 cursor-pointer w-full h-full z-10 flex justify-center items-center"
+            onClick={addModalClose}
+          >
+            <div
+              className="w-full  max-w-xs"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <form className="cursor-auto py-5">
+                <h3 className="mb-5 mx-auto text-center text-lg font-semibold">
+                  New Expense
+                </h3>
+                <label className="input input-bordered flex items-center gap-2 justify-center">
+                  <input type="text" className="grow" placeholder="Name" />
+                </label>
+                <br />
+                <label className="input input-bordered flex items-center gap-2 justify-center">
+                  <input type="text" className="grow" placeholder="Category" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 16 16"
+                    fill="currentColor"
+                    className="w-4 h-4 opacity-70"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </label>
+                <br />
+                <label className="input input-bordered flex items-center gap-2 justify-center">
+                  <input type="text" className="grow" placeholder="Amount" />
+                </label>
+                <br />
+                <button className="btn btn-primary mx-auto flex items-center justify-center">
+                  Add
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+
         <div class="grid grid-cols-1 pt-5 gap-4">
           <div className=" text-white text-lg text-center p-2">
             £6500 <br></br>
@@ -111,7 +166,6 @@ function Expenses({ expensesArray, expensesCategoriesArray }) {
           </div>
           {showExpenseListComp && <ExpensesListComp />}
         </div>
-
         <div className=" mt-6 grid grid-cols-3 gap-2 px-8 ">
           <div className="col-span-1 cursor-pointer hover:bg-base-100/50 shadow-md text-white text-center py-5 rounded-md">
             <h1>5</h1>
