@@ -182,6 +182,13 @@ function App() {
     }, 2000);
   };
 
+  const addNewExpenseCategory = (newExpenseCategorydata) => {
+    console.log("====================================");
+    console.log("here baiiiiiiill;;;");
+    console.log(newExpenseCategorydata);
+    console.log("====================================");
+  };
+
   // Function to add a new income to the array
   const addNewIncome = (newIncomeData) => {
     // Calculate the new ID based on existing incomes
@@ -295,6 +302,7 @@ function App() {
           <Expenses
             expensesArray={expenses}
             expensesCategoriesArray={expensesCategories}
+            onAddExpenseCategory={addNewExpenseCategory}
           />
 
           <Graph />

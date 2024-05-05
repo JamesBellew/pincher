@@ -1,11 +1,17 @@
 import "../App.css";
 import React, { useEffect, useRef, useState } from "react";
 
-function Expenses({ expensesArray, expensesCategoriesArray }) {
+function Expenses({
+  expensesArray,
+  expensesCategoriesArray,
+  onAddExpenseCategory,
+}) {
   const [showExpenseCategoriesComp, setShowExpenseCategoriesComp] =
     useState(true);
   const [showExpenseListComp, setShowExpenseListComp] = useState(true);
   const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
+  const [newIncomeName, setNewIncomeName] = useState("");
+  const [newExpenseCategoryName, setNewExpenseCategoryName] = useState("");
   const [showAddExpenseCategoryModal, setShowAddExpenseCategoryModal] =
     useState(false);
 
@@ -38,6 +44,25 @@ function Expenses({ expensesArray, expensesCategoriesArray }) {
   };
   const addModalCloseCat = () => {
     setShowAddExpenseCategoryModal(false);
+  };
+  // Handler for input changes
+  const handleInputChange = (e) => {
+    console.log("====================================");
+    console.log(e.target.value);
+    const newCategory = e.target.value;
+    setNewIncomeName(newCategory);
+    console.log("====================================");
+  };
+  const handleSubmit = () => {
+    console.log("====================================");
+    console.log("boii");
+    console.log("====================================");
+  };
+  const newExpenseCatgeryBtnHandler = () => {
+    console.log("====================================");
+    console.log("in expense btn hanlder");
+    console.log("====================================");
+    onAddExpenseCategory(newExpenseCategoryName);
   };
   function ExpensesListComp() {
     return (
@@ -79,55 +104,58 @@ function Expenses({ expensesArray, expensesCategoriesArray }) {
       </div>
     );
   }
+
   function AddExpenseCategory({ onClose }) {
+    const [newCategoryName, setNewCategoryName] = useState("");
+
+    const handleInputChange = (e) => {
+      setNewCategoryName(e.target.value);
+    };
+
     const handleClick = (e) => {
       if (e.target === e.currentTarget) {
         onClose();
       }
     };
 
+    const handleAddCategory = () => {
+      // Call a function here to handle adding the new category with newCategoryName
+      console.log("New category name:", newCategoryName);
+      // You can perform any further actions here, such as sending the new category to a parent component
+      onClose();
+    };
+
     return (
       <div
         className="absolute bg-base-200/95 cursor-pointer w-full h-full z-10 flex justify-center items-center"
-        onClick={addModalCloseCat}
+        onClick={handleClick}
       >
-        <div className="w-full  max-w-xs" onClick={(e) => e.stopPropagation()}>
-          <form className="cursor-auto py-5">
-            <h3 className="mb-5 mx-auto text-center text-lg font-semibold">
-              New Category
-            </h3>
-            <label className="input input-bordered flex items-center gap-2 justify-center">
-              <input type="text" className="grow" placeholder="Name" />
+        <div className="w-full max-w-xs" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-box h-[80%]">
+            <h3 className="font-bold text-lg">Add New Income</h3>
+            <br></br>
+            <label className="input input-bordered flex items-center gap-2">
+              <input
+                type="text"
+                name="name"
+                className="grow"
+                placeholder="Category"
+                value={newCategoryName}
+                onChange={handleInputChange}
+              />
             </label>
-            <br />
-            <label className="input input-bordered flex items-center gap-2 justify-center">
-              <input type="text" className="grow" placeholder="Category" />
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 16 16"
-                fill="currentColor"
-                className="w-4 h-4 opacity-70"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </label>
-            <br />
-            <label className="input input-bordered flex items-center gap-2 justify-center">
-              <input type="text" className="grow" placeholder="Amount" />
-            </label>
-            <br />
-            <button className="btn btn-primary mx-auto flex items-center justify-center">
+            <button
+              className="btn mx-auto text-center w-full mt-5"
+              onClick={handleAddCategory}
+            >
               Add
             </button>
-          </form>
+          </div>
         </div>
       </div>
     );
   }
+
   function AddExpenseModal() {
     return (
       <div
@@ -135,7 +163,7 @@ function Expenses({ expensesArray, expensesCategoriesArray }) {
         onClick={addModalClose}
       >
         <div className="w-full  max-w-xs" onClick={(e) => e.stopPropagation()}>
-          <form className="cursor-auto py-5">
+          <div className="cursor-auto py-5">
             <h3 className="mb-5 mx-auto text-center text-lg font-semibold">
               New Expense
             </h3>
@@ -166,7 +194,7 @@ function Expenses({ expensesArray, expensesCategoriesArray }) {
             <button className="btn btn-primary mx-auto flex items-center justify-center">
               Add
             </button>
-          </form>
+          </div>
         </div>
       </div>
     );
