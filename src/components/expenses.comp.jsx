@@ -14,10 +14,15 @@ function Expenses({
   const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
   const [newIncomeName, setNewIncomeName] = useState("");
   const [newExpenseCategoryName, setNewExpenseCategoryName] = useState("");
+  const [expenseListCategoryFilter, setExpenseListCategoryFilter] = useState(
+    []
+  );
   //new expense variables end
   const [showAddExpenseCategoryModal, setShowAddExpenseCategoryModal] =
     useState(false);
-
+  function PriceDisplay({ price }) {
+    return <h1 className="text-xl font-bold text-[#9FA7B5]">£{price}</h1>;
+  }
   //want to get the total figures for the categories somehow :L
   // Using .reduce() to sum expenses by category
   const totalsByCategory = expensesArray.reduce((acc, expense) => {
@@ -29,7 +34,10 @@ function Expenses({
     acc[expense.category] += expense.amount;
     return acc;
   }, {});
-
+  const expenseFilterClearHandler = () => {
+    setExpenseListCategoryFilter([]);
+    console.log("clicked");
+  };
   const expenseCategoryBtnHandler = () => {
     setShowExpenseCategoriesComp(!showExpenseCategoriesComp);
   };
@@ -78,7 +86,7 @@ function Expenses({
         </button>
         {expensesArray.map((expense) => {
           return (
-            <div className="shadow-md  text-sm rounded-md px-4 py-2 mx-6 my-1">
+            <div className="shadow-md text-sm rounded-md px-4 py-2 mx-6 my-1">
               £{expense.amount} {expense.name}
             </div>
           );
@@ -88,6 +96,20 @@ function Expenses({
   }
 
   function ExpensesCategoriesComp() {
+    const categoryTileClickHandler = (expenseName) => {
+      setExpenseListCategoryFilter((currentFilter) => {
+        // Check if the expenseName is already included in the array
+        if (currentFilter.includes(expenseName)) {
+          // If it's included, return a new array without that expenseName
+          return currentFilter.filter((name) => name !== expenseName);
+        } else {
+          // If it's not included, add the expenseName to the array
+          return [...currentFilter, expenseName];
+        }
+      });
+      console.log(expenseName);
+    };
+
     return (
       <>
         <button
@@ -96,10 +118,19 @@ function Expenses({
         >
           +
         </button>
-        <div className="grid  overflow-x-hidden overflow-auto max-h-36 grid-cols-3 gap-2 relative ">
+        <div className="grid   overflow-x-hidden overflow-auto max-h-36 grid-cols-3 gap-2 relative ">
           {expensesCategoriesArray.map((category) => {
             return (
-              <div className="p-4 col-span-1 rounded-md bg-base-100/50 shadow-md text-center">
+              <div
+                onClick={() => categoryTileClickHandler(category.name)}
+                className={`p-4 
+                ${
+                  expenseListCategoryFilter.includes(category.name)
+                    ? "border-tahiti/50 border-2" // Applied if category.name is in the expenseListCategoryFilter array
+                    : ""
+                }
+                cursor-pointer hover:bg-base-200 col-span-1 rounded-md bg-base-100/50 shadow-md text-center`}
+              >
                 <p className="text-sm">
                   £{totalsByCategory[category.name] || 0}
                 </p>
@@ -180,16 +211,39 @@ function Expenses({
     const [newExpenseCategory, setNewExpenseCategory] = useState("");
     const [newExpenseAmount, setNewExpenseAmount] = useState("");
     const [newExpenseName, setNewExpenseName] = useState("");
+    // form validation consts
+    const [isNameValid, setIsNameValid] = useState(false);
+    const [isAmountValid, setIsAmountValid] = useState(false);
+    const [isFormValid, setIsFormValid] = useState(false);
     const newExpenseInoputChangeHandler = (e) => {
       if (e.target.name === "name") {
         setNewExpenseName(e.target.value);
+        if (e.target.value.length > 1) {
+          setIsNameValid(true);
+        } else {
+          setIsNameValid(false);
+        }
       } else if (e.target.name === "category") {
         setNewExpenseCategory(e.target.value);
       } else if (e.target.name === "amount") {
         setNewExpenseAmount(e.target.value);
+        if (e.target.value > 0) {
+          setIsAmountValid(true);
+        } else {
+          setIsAmountValid(false);
+        }
       }
+
+      //form validation
     };
 
+    useEffect(() => {
+      if (isNameValid === true && isAmountValid === true) {
+        setIsFormValid(true);
+      } else {
+        setIsFormValid(false);
+      }
+    }, [isNameValid, isAmountValid]);
     const handleAddExpense = () => {
       // You can perform any further actions here, such as sending the new category to a parent component
       const newExpense = {
@@ -254,6 +308,7 @@ function Expenses({
             </label>
             <br />
             <button
+              disabled={!isFormValid}
               onClick={handleAddExpense}
               className="btn btn-primary mx-auto flex items-center justify-center"
             >
@@ -268,6 +323,15 @@ function Expenses({
   for (const [category, total] of Object.entries(totalsByCategory)) {
     console.log(`${category} = ${total}`);
   }
+  const [totalExpenseAmount, setTotalExpenseAmount] = useState(0);
+  //use effect for total expense figure
+  useEffect(() => {
+    let total = 0; // Initialize total as a let variable to allow modification
+    expensesArray.forEach((expense) => {
+      total += expense.amount; // Add each expense's amount to the total
+    });
+    setTotalExpenseAmount(total); // Update the state with the new total
+  }, [expensesArray]); // Depend on expensesArray to recalculate when it changes
 
   return (
     <>
@@ -280,11 +344,12 @@ function Expenses({
 
         <div class="grid grid-cols-1 pt-5 gap-4">
           <div className=" text-white text-lg text-center p-2">
-            £6500 <br></br>
+            {/* £ {totalExpenseAmount} */}
+            <PriceDisplay price={totalExpenseAmount} />
           </div>
         </div>
         <div
-          className={`
+          className={` 
         ${!showExpenseCategoriesComp ? "shadow-lg" : " "}
 
         border-base-100 p-2 rounded-md  mx-8 `}
@@ -296,6 +361,15 @@ function Expenses({
             >
               {showExpenseCategoriesComp ? "-" : "+"}
             </button>
+            {expenseListCategoryFilter.length > 0 &&
+              showExpenseCategoriesComp && (
+                <span
+                  onClick={expenseFilterClearHandler}
+                  className="text-xs my-auto hover:bg-bubble-gum hover:text-base-200 cursor-pointer font-thin bg-base-100 px-2 py-1 rounded-md"
+                >
+                  {expenseListCategoryFilter}
+                </span>
+              )}
             {!showExpenseCategoriesComp && (
               <span className=" text-left"> Expenses Categories</span>
             )}
@@ -307,9 +381,9 @@ function Expenses({
         <div
           className={`expensesArrayDiv ${
             !showExpenseListComp ? "shadow-lg p-1" : " "
-          }  max-h-32 relative  overflow-auto  w-[90%] mx-auto mt-5`}
+          } relative  max-h-36 relative  overflow-auto  w-[90%] mx-auto mt-5`}
         >
-          <div className="w-4/5 mx-5  mb-1 rounded-md flex justify-start">
+          <div className="w-4/5 mx-5 relative  mb-1 rounded-md flex justify-start">
             <button
               onClick={expenseListBtnHandler}
               className="bg-tahiti/10 px-2 text-xs mr-1 font-bold p-1 rounded-md"
@@ -320,9 +394,11 @@ function Expenses({
               <span className=" text-left"> Expenses</span>
             )}
           </div>
-          {showExpenseListComp && <ExpensesListComp />}
+          <div className="relative">
+            {showExpenseListComp && <ExpensesListComp />}
+          </div>
         </div>
-        <div className=" mt-6 grid grid-cols-3 gap-2 px-8 ">
+        <div className="  mt-6 grid grid-cols-3 gap-2 px-8 ">
           <div className="col-span-1 cursor-pointer hover:bg-base-100/50 shadow-md text-white text-center py-5 rounded-md">
             <h1>5</h1>
             <p>categories</p>
