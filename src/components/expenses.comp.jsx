@@ -5,13 +5,16 @@ function Expenses({
   expensesArray,
   expensesCategoriesArray,
   onAddExpenseCategory,
+  onAddExpense,
 }) {
+  const [isNewCategoryNameValid, setIsNewCategoryNameValid] = useState(false);
   const [showExpenseCategoriesComp, setShowExpenseCategoriesComp] =
     useState(true);
   const [showExpenseListComp, setShowExpenseListComp] = useState(true);
   const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
   const [newIncomeName, setNewIncomeName] = useState("");
   const [newExpenseCategoryName, setNewExpenseCategoryName] = useState("");
+  //new expense variables end
   const [showAddExpenseCategoryModal, setShowAddExpenseCategoryModal] =
     useState(false);
 
@@ -121,7 +124,9 @@ function Expenses({
     const handleAddCategory = () => {
       // Call a function here to handle adding the new category with newCategoryName
       console.log("New category name:", newCategoryName);
+      setShowAddExpenseCategoryModal(false);
       // You can perform any further actions here, such as sending the new category to a parent component
+      onAddExpenseCategory(newCategoryName);
       onClose();
     };
 
@@ -145,7 +150,8 @@ function Expenses({
               />
             </label>
             <button
-              className="btn mx-auto text-center w-full mt-5"
+              // disabled={!isNewCategoryNameValid}
+              className="btn mx-auto bg-purple text-center w-full mt-5"
               onClick={handleAddCategory}
             >
               Add
@@ -157,6 +163,32 @@ function Expenses({
   }
 
   function AddExpenseModal() {
+    //new expense variables
+    const [newExpenseCategory, setNewExpenseCategory] = useState("");
+    const [newExpenseAmount, setNewExpenseAmount] = useState("");
+    const [newExpenseName, setNewExpenseName] = useState("");
+    const newExpenseInoputChangeHandler = (e) => {
+      if (e.target.name === "name") {
+        setNewExpenseName(e.target.value);
+      } else if (e.target.name === "category") {
+        setNewExpenseCategory(e.target.value);
+      } else if (e.target.name === "amount") {
+        setNewExpenseAmount(e.target.value);
+      }
+    };
+
+    const handleAddExpense = () => {
+      // You can perform any further actions here, such as sending the new category to a parent component
+      const newExpense = {
+        name: newExpenseName,
+        amount: newExpenseAmount,
+        category: newExpenseCategory,
+      };
+      onAddExpense(newExpense);
+
+      setShowAddExpenseModal(false);
+      onClose();
+    };
     return (
       <div
         className="absolute bg-base-200/95 cursor-pointer w-full h-full z-10 flex justify-center items-center"
@@ -168,30 +200,50 @@ function Expenses({
               New Expense
             </h3>
             <label className="input input-bordered flex items-center gap-2 justify-center">
-              <input type="text" className="grow" placeholder="Name" />
+              <input
+                onChange={newExpenseInoputChangeHandler}
+                type="text"
+                className="grow"
+                placeholder="Name"
+                name="name"
+              />
             </label>
+            <br />
+            <select
+              onChange={newExpenseInoputChangeHandler}
+              className="select mb-5 select-bordered w-full max-w-xs"
+              name="category"
+            >
+              <option disabled selected>
+                Category
+              </option>
+              {expensesArray.map((expense) => {
+                return (
+                  <option
+                    // name={"category"}
+
+                    value={expense.name}
+                  >
+                    {expense.name}
+                  </option>
+                );
+              })}
+            </select>
             <br />
             <label className="input input-bordered flex items-center gap-2 justify-center">
-              <input type="text" className="grow" placeholder="Category" />
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 16 16"
-                fill="currentColor"
-                className="w-4 h-4 opacity-70"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-                  clipRule="evenodd"
-                />
-              </svg>
+              <input
+                name="amount"
+                onChange={newExpenseInoputChangeHandler}
+                type="text"
+                className="grow"
+                placeholder="Amount"
+              />
             </label>
             <br />
-            <label className="input input-bordered flex items-center gap-2 justify-center">
-              <input type="text" className="grow" placeholder="Amount" />
-            </label>
-            <br />
-            <button className="btn btn-primary mx-auto flex items-center justify-center">
+            <button
+              onClick={handleAddExpense}
+              className="btn btn-primary mx-auto flex items-center justify-center"
+            >
               Add
             </button>
           </div>
@@ -221,7 +273,7 @@ function Expenses({
         <div
           className={`
         ${!showExpenseCategoriesComp ? "shadow-lg" : " "}
-        
+
         border-base-100 p-2 rounded-md  mx-8 `}
         >
           <div className="w-4/5   mb-1 rounded-md flex justify-start">
@@ -242,7 +294,7 @@ function Expenses({
         <div
           className={`expensesArrayDiv ${
             !showExpenseListComp ? "shadow-lg p-1" : " "
-          }  max-h-44 relative  overflow-auto  w-[90%] mx-auto mt-10`}
+          }  max-h-32 relative  overflow-auto  w-[90%] mx-auto mt-10`}
         >
           <div className="w-4/5 mx-5  mb-1 rounded-md flex justify-start">
             <button

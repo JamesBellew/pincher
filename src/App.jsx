@@ -182,13 +182,26 @@ function App() {
     }, 2000);
   };
 
-  const addNewExpenseCategory = (newExpenseCategorydata) => {
-    console.log("====================================");
-    console.log("here baiiiiiiill;;;");
-    console.log(newExpenseCategorydata);
-    console.log("====================================");
-  };
+  const addNewExpenseCategory = (newExpenseCategoryData) => {
+    // Create a new expense category object
+    const newCategory = {
+      id: expensesCategories.length, // Assign a unique ID based on the array length (you might want a more robust ID generation in a real-world scenario)
+      name: newExpenseCategoryData, // Use the provided category name
+      amount: 0, // Set the initial amount to 0 or any default value
+    };
 
+    // Update the expensesCategories state by appending the new category
+    setExpensesCategories((prevCategories) => [...prevCategories, newCategory]);
+  };
+  const addNewExpense = (newExpenseData) => {
+    const newExpense = {
+      id: expenses.length,
+      name: newExpenseData.name,
+      amount: newExpenseData.amount,
+      category: newExpenseData.category,
+    };
+    setExpenses((prevExpenses) => [...prevExpenses, newExpense]);
+  };
   // Function to add a new income to the array
   const addNewIncome = (newIncomeData) => {
     // Calculate the new ID based on existing incomes
@@ -303,6 +316,7 @@ function App() {
             expensesArray={expenses}
             expensesCategoriesArray={expensesCategories}
             onAddExpenseCategory={addNewExpenseCategory}
+            onAddExpense={addNewExpense}
           />
 
           <Graph />
