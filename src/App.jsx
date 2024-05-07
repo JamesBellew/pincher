@@ -80,7 +80,7 @@ function App() {
     {
       id: 1,
       name: "Spotify",
-      amount: 5.55,
+      amount: 5.5,
       category: "Subscriptions",
       color: "#3ab7bf",
       icon: "computer",
@@ -96,7 +96,7 @@ function App() {
     {
       id: 3,
       name: "Netflix",
-      amount: 15.55,
+      amount: 15.5,
       category: "Subscriptions",
       color: "#3ab7bf",
       icon: "computer",

@@ -34,8 +34,13 @@ function Expenses({
     acc[expense.category] += expense.amount;
     return acc;
   }, {});
-  const expenseFilterClearHandler = () => {
-    setExpenseListCategoryFilter([]);
+  const expenseFilterClearHandler = (filter) => {
+    setExpenseListCategoryFilter(
+      expenseListCategoryFilter.filter((name) => name !== filter)
+    );
+    // setExpenseListCategoryFilter(
+    //   currentFilter.filter((name) => name !== filter)
+    // );
     console.log("clicked");
   };
   const expenseCategoryBtnHandler = () => {
@@ -80,17 +85,19 @@ function Expenses({
       <>
         <button
           onClick={addNewExpenseHandler}
-          className="absolute w-7 h-7  top-2 right-5 rounded-full bg-tahiti text-center text-white"
+          className="absolute w-7 h-7  top-[-15px] right-3 rounded-full bg-tahiti text-center text-white"
         >
           +
         </button>
-        {expensesArray.map((expense) => {
-          return (
-            <div className="shadow-md text-sm rounded-md px-4 py-2 mx-6 my-1">
-              £{expense.amount} {expense.name}
-            </div>
-          );
-        })}
+        <div className="grid grid-cols-2 mx-3">
+          {expensesArray.map((expense) => {
+            return (
+              <div className="shadow-md cursor-pointer hover:bg-base-200 text-sm rounded-md bg-base-100 px-2 py-2 mx-1 my-1">
+                £{expense.amount} {expense.name}
+              </div>
+            );
+          })}
+        </div>
       </>
     );
   }
@@ -126,7 +133,7 @@ function Expenses({
                 className={`p-4 
                 ${
                   expenseListCategoryFilter.includes(category.name)
-                    ? "border-tahiti/50 border-2" // Applied if category.name is in the expenseListCategoryFilter array
+                    ? "shadow-tahiti/50 shadow-md" // Applied if category.name is in the expenseListCategoryFilter array
                     : ""
                 }
                 cursor-pointer hover:bg-base-200 col-span-1 rounded-md bg-base-100/50 shadow-md text-center`}
@@ -258,7 +265,7 @@ function Expenses({
     };
     return (
       <div
-        className="absolute bg-base-200/95 cursor-pointer w-full h-full z-10 flex justify-center items-center"
+        className="absolute bg-base-200/95 z-20 cursor-pointer w-full h-full  flex justify-center items-center"
         onClick={addModalClose}
       >
         <div className="w-full  max-w-xs" onClick={(e) => e.stopPropagation()}>
@@ -362,14 +369,17 @@ function Expenses({
               {showExpenseCategoriesComp ? "-" : "+"}
             </button>
             {expenseListCategoryFilter.length > 0 &&
-              showExpenseCategoriesComp && (
-                <span
-                  onClick={expenseFilterClearHandler}
-                  className="text-xs my-auto hover:bg-bubble-gum hover:text-base-200 cursor-pointer font-thin bg-base-100 px-2 py-1 rounded-md"
-                >
-                  {expenseListCategoryFilter}
-                </span>
-              )}
+              showExpenseCategoriesComp &&
+              expenseListCategoryFilter.map((filter) => {
+                return (
+                  <span
+                    onClick={() => expenseFilterClearHandler(filter)}
+                    className="text-xs my-auto hover:bg-bubble-gum w-auto hover:text-base-200 cursor-pointer font-thin bg-base-100 px-2 py-1 rounded-md"
+                  >
+                    {filter}
+                  </span>
+                );
+              })}
             {!showExpenseCategoriesComp && (
               <span className=" text-left"> Expenses Categories</span>
             )}
@@ -394,7 +404,7 @@ function Expenses({
               <span className=" text-left"> Expenses</span>
             )}
           </div>
-          <div className="relative">
+          <div className="relative ">
             {showExpenseListComp && <ExpensesListComp />}
           </div>
         </div>
