@@ -89,28 +89,41 @@ function Expenses({
 
   function ExpensesCategoriesComp() {
     return (
-      <div className="grid grid-cols-3 gap-2 relative ">
+      <>
         <button
           onClick={addNewExpenseCategoryHandler}
-          className="absolute  right-[-15px] w-7 h-7 -translate-y-2.5 -translate-x-3.5 rounded-full bg-tahiti text-center text-white"
+          className="absolute  right-5 z-10 w-7 h-7 -translate-y-2.5 -translate-x-3.5 rounded-full bg-tahiti text-center text-white"
         >
           +
         </button>
-        {expensesCategoriesArray.map((category) => {
-          return (
-            <div className="p-4 col-span-1 rounded-md bg-base-100/50 shadow-md text-center">
-              <p className="text-sm">£{totalsByCategory[category.name] || 0}</p>
-              <p className="text-xs">{category.name}</p>
-            </div>
-          );
-        })}
-      </div>
+        <div className="grid  overflow-x-hidden overflow-auto max-h-36 grid-cols-3 gap-2 relative ">
+          {expensesCategoriesArray.map((category) => {
+            return (
+              <div className="p-4 col-span-1 rounded-md bg-base-100/50 shadow-md text-center">
+                <p className="text-sm">
+                  £{totalsByCategory[category.name] || 0}
+                </p>
+                <p className="text-xs">{category.name}</p>
+              </div>
+            );
+          })}
+        </div>
+      </>
     );
   }
 
   function AddExpenseCategory({ onClose }) {
     const [newCategoryName, setNewCategoryName] = useState("");
+    const [isNewCategoryInputValid, setIsNewCategoryInputValid] =
+      useState(false);
 
+    useEffect(() => {
+      if (newCategoryName.length > 1) {
+        setIsNewCategoryInputValid(true);
+      } else {
+        setIsNewCategoryInputValid(false);
+      }
+    }, [newCategoryName]);
     const handleInputChange = (e) => {
       setNewCategoryName(e.target.value);
     };
@@ -133,7 +146,7 @@ function Expenses({
     return (
       <div
         className="absolute bg-base-200/95 cursor-pointer w-full h-full z-10 flex justify-center items-center"
-        onClick={handleClick}
+        onClick={addModalCloseCat}
       >
         <div className="w-full max-w-xs" onClick={(e) => e.stopPropagation()}>
           <div className="modal-box h-[80%]">
@@ -150,7 +163,7 @@ function Expenses({
               />
             </label>
             <button
-              // disabled={!isNewCategoryNameValid}
+              disabled={!isNewCategoryInputValid}
               className="btn mx-auto bg-purple text-center w-full mt-5"
               onClick={handleAddCategory}
             >
@@ -217,7 +230,7 @@ function Expenses({
               <option disabled selected>
                 Category
               </option>
-              {expensesArray.map((expense) => {
+              {expensesCategoriesArray.map((expense) => {
                 return (
                   <option
                     // name={"category"}
@@ -294,7 +307,7 @@ function Expenses({
         <div
           className={`expensesArrayDiv ${
             !showExpenseListComp ? "shadow-lg p-1" : " "
-          }  max-h-32 relative  overflow-auto  w-[90%] mx-auto mt-10`}
+          }  max-h-32 relative  overflow-auto  w-[90%] mx-auto mt-5`}
         >
           <div className="w-4/5 mx-5  mb-1 rounded-md flex justify-start">
             <button
