@@ -105,7 +105,7 @@ function App() {
       id: 4,
       name: "Groceries",
       amount: 75,
-      category: "Day to Day",
+      category: "Everyday",
       color: "#3ab7bf",
       icon: "computer",
     },
@@ -128,7 +128,7 @@ function App() {
     },
     {
       id: 3,
-      name: "Day to Day",
+      name: "Everyday",
       amount: 0,
     },
   ]);

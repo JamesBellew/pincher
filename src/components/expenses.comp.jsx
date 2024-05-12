@@ -81,6 +81,13 @@ function Expenses({
     onAddExpenseCategory(newExpenseCategoryName);
   };
   function ExpensesListComp() {
+    // Filter the expenses based on the category filter
+    const filteredExpenses =
+      expenseListCategoryFilter.length > 0
+        ? expensesArray.filter((expense) =>
+            expenseListCategoryFilter.includes(expense.category)
+          )
+        : expensesArray;
     return (
       <>
         <button
@@ -90,7 +97,7 @@ function Expenses({
           +
         </button>
         <div className="grid grid-cols-2 mx-3">
-          {expensesArray.map((expense) => {
+          {filteredExpenses.map((expense) => {
             return (
               <div className="shadow-md cursor-pointer hover:bg-base-200 text-sm rounded-md bg-base-100 px-2 py-2 mx-1 my-1">
                 £{expense.amount} {expense.name}
@@ -152,13 +159,25 @@ function Expenses({
 
   function AddExpenseCategory({ onClose }) {
     const [newCategoryName, setNewCategoryName] = useState("");
+    const [inputErrorMsg, setInputErrorMsg] = useState("");
     const [isNewCategoryInputValid, setIsNewCategoryInputValid] =
       useState(false);
 
     useEffect(() => {
-      if (newCategoryName.length > 1) {
+      const testingCheck = expensesCategoriesArray.some(
+        (cat) => cat.name === newCategoryName
+      );
+
+      //before I send the new expense compoenent, I want to check to see if the categorie exists and if it does then I do not want to make the btn clickable
+      if (newCategoryName.length > 1 && !testingCheck) {
+        setInputErrorMsg(null);
         setIsNewCategoryInputValid(true);
+      } else if (testingCheck) {
+        //set error message for the category existing
+        setInputErrorMsg(newCategoryName + " already exists :(");
+        setIsNewCategoryInputValid(false);
       } else {
+        setInputErrorMsg("Must be 2 characters");
         setIsNewCategoryInputValid(false);
       }
     }, [newCategoryName]);
@@ -177,6 +196,7 @@ function Expenses({
       console.log("New category name:", newCategoryName);
       setShowAddExpenseCategoryModal(false);
       // You can perform any further actions here, such as sending the new category to a parent component
+
       onAddExpenseCategory(newCategoryName);
       onClose();
     };
@@ -190,6 +210,9 @@ function Expenses({
           <div className="modal-box h-[80%]">
             <h3 className="font-bold text-lg">Add New Income</h3>
             <br></br>
+            <p className="text-xs font-thin mb-2 text-tahiti">
+              {inputErrorMsg}
+            </p>
             <label className="input input-bordered flex items-center gap-2">
               <input
                 type="text"
@@ -374,7 +397,7 @@ function Expenses({
                 return (
                   <span
                     onClick={() => expenseFilterClearHandler(filter)}
-                    className="text-xs my-auto hover:bg-bubble-gum w-auto hover:text-base-200 cursor-pointer font-thin bg-base-100 px-2 py-1 rounded-md"
+                    className="text-xs my-auto mr-1 hover:bg-tahiti  w-auto hover:text-base-200 cursor-pointer font-thin bg-base-100 px-2 py-1 rounded-md"
                   >
                     {filter}
                   </span>
