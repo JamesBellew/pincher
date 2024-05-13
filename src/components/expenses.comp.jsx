@@ -132,7 +132,7 @@ function Expenses({
         >
           +
         </button>
-        <div className="grid   overflow-x-hidden overflow-auto max-h-36 grid-cols-3 gap-2 relative ">
+        <div className="grid pb-10  overflow-x-hidden overflow-auto max-h-36 grid-cols-3 gap-1 relative ">
           {expensesCategoriesArray.map((category) => {
             return (
               <div
@@ -140,7 +140,7 @@ function Expenses({
                 className={`p-4 
                 ${
                   expenseListCategoryFilter.includes(category.name)
-                    ? "shadow-tahiti/50 shadow-md" // Applied if category.name is in the expenseListCategoryFilter array
+                    ? "border-tahiti/50 shadow-md border-b-2" // Applied if category.name is in the expenseListCategoryFilter array
                     : ""
                 }
                 cursor-pointer hover:bg-base-200 col-span-1 rounded-md bg-base-100/50 shadow-md text-center`}
@@ -397,7 +397,7 @@ function Expenses({
                 return (
                   <span
                     onClick={() => expenseFilterClearHandler(filter)}
-                    className="text-xs my-auto mr-1 hover:bg-tahiti  w-auto hover:text-base-200 cursor-pointer font-thin bg-base-100 px-2 py-1 rounded-md"
+                    className="text-xs my-auto  hover:bg-tahiti  w-auto hover:text-base-200 cursor-pointer font-thin bg-base-100 px-2 py-1 rounded-md"
                   >
                     {filter}
                   </span>
@@ -414,7 +414,7 @@ function Expenses({
         <div
           className={`expensesArrayDiv ${
             !showExpenseListComp ? "shadow-lg p-1" : " "
-          } relative  max-h-36 relative  overflow-auto  w-[90%] mx-auto mt-5`}
+          } relative  max-h-[50%]  relative  overflow-auto  w-[90%] mx-auto mt-5`}
         >
           <div className="w-4/5 mx-5 relative  mb-1 rounded-md flex justify-start">
             <button
@@ -431,7 +431,7 @@ function Expenses({
             {showExpenseListComp && <ExpensesListComp />}
           </div>
         </div>
-        <div className="  mt-6 grid grid-cols-3 gap-2 px-8 ">
+        {/* <div className="  mt-6 grid grid-cols-3 gap-2 px-8 ">
           <div className="col-span-1 cursor-pointer hover:bg-base-100/50 shadow-md text-white text-center py-5 rounded-md">
             <h1>5</h1>
             <p>categories</p>
@@ -444,7 +444,7 @@ function Expenses({
             <h1>15</h1>
             <p>Expenses</p>
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );
