@@ -12,7 +12,9 @@ function Expenses({
     useState(true);
   const [showExpenseListComp, setShowExpenseListComp] = useState(true);
   const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
+  const [showEditExpenseModal, setShowEditExpenseModal] = useState(false);
   const [newIncomeName, setNewIncomeName] = useState("");
+  const [expenseToEdit, setExpenseToEdit] = useState({});
   const [newExpenseCategoryName, setNewExpenseCategoryName] = useState("");
   const [expenseListCategoryFilter, setExpenseListCategoryFilter] = useState(
     []
@@ -80,6 +82,10 @@ function Expenses({
     console.log("====================================");
     onAddExpenseCategory(newExpenseCategoryName);
   };
+  const expenseItemClickHandler = (expense) => {
+    setShowEditExpenseModal(true);
+    setExpenseToEdit(expense);
+  };
   function ExpensesListComp() {
     // Filter the expenses based on the category filter
     const filteredExpenses =
@@ -99,7 +105,10 @@ function Expenses({
         <div className="grid grid-cols-2 mx-3">
           {filteredExpenses.map((expense) => {
             return (
-              <div className="shadow-md cursor-pointer hover:bg-base-200 text-sm rounded-md bg-base-100 px-2 py-2 mx-1 my-1">
+              <div
+                onClick={() => expenseItemClickHandler(expense)}
+                className="shadow-md cursor-pointer hover:bg-base-200 text-sm rounded-md bg-base-100 px-2 py-2 mx-1 my-1"
+              >
                 £{expense.amount} {expense.name}
               </div>
             );
@@ -235,6 +244,26 @@ function Expenses({
       </div>
     );
   }
+  function EditExpenseModal() {
+    return (
+      <>
+        <div className="w-full h-full absolute z-10 bg-base-200/50 flex items-center justify-center">
+          <div className="bg-base-100 z-20 py-10 w-3/4 px-10 text-center rounded-md">
+            <h1>Edit {expenseToEdit.name}</h1>
+            <br></br>
+            {/* <h1> {expenseToEdit.amount}</h1> */}
+            <input
+              type="number"
+              className="input w-32 bg-base-200"
+              placeholder={expenseToEdit.amount}
+            ></input>
+            <br></br>
+            <button className="btn bg-purple mt-5">Save</button>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   function AddExpenseModal() {
     //new expense variables
@@ -367,6 +396,7 @@ function Expenses({
     <>
       <div className="md:h-[80vh] h-[85vh] dark:bg-base-200 bg-white relative  col-span-2 md:col-span-2 rounded-md">
         {/* add new expense Modal */}
+        {showEditExpenseModal && <EditExpenseModal />}
         {showAddExpenseModal && <AddExpenseModal onClose={addModalClose} />}
         {showAddExpenseCategoryModal && (
           <AddExpenseCategory onClose={addModalClose} />
