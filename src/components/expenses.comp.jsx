@@ -244,16 +244,37 @@ function Expenses({
       </div>
     );
   }
+
   function EditExpenseModal() {
+    const editExpenseChangeHandler = (e) => {
+      console.log("====================================");
+      console.log("changes the input");
+      console.log(e.target.value);
+      console.log(expenseToEdit.name);
+      console.log(expenseToEdit.id);
+      console.log("====================================");
+      //!need to do some form validation to allow user to suubmit to the button
+      //!need to then create a function eithin the aprent comp to allow the new edit to be pushed to the expenses array
+    };
     return (
       <>
-        <div className="w-full h-full absolute z-10 bg-base-200/50 flex items-center justify-center">
-          <div className="bg-base-100 z-20 py-10 w-3/4 px-10 text-center rounded-md">
-            <h1>Edit {expenseToEdit.name}</h1>
+        <div
+          onClick={() => {
+            setShowEditExpenseModal(false);
+          }}
+          className="w-full h-full cursor-pointer absolute z-10 bg-base-200/50 flex items-center justify-center"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="bg-base-100 z-20 py-10 w-3/4 px-10 text-center rounded-md"
+          >
+            <h1> {expenseToEdit.name}</h1>
             <br></br>
-            {/* <h1> {expenseToEdit.amount}</h1> */}
+
             <input
+              onChange={editExpenseChangeHandler}
               type="number"
+              name="amount"
               className="input w-32 bg-base-200"
               placeholder={expenseToEdit.amount}
             ></input>
