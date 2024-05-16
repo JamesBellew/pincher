@@ -289,10 +289,6 @@ function Income({
       backgroundColor: "#1d232a",
       alignItems: "center",
       padding: 2,
-      backgroundColor: state.isSelected ? "#ccc" : "transparent", // Highlight if selected
-      ":hover": {
-        backgroundColor: "#eee", // Highlight on hover
-      },
     }),
   };
 

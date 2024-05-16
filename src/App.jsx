@@ -81,7 +81,7 @@ function App() {
       id: 1,
       name: "Spotify",
       amount: 5.5,
-      category: "Subscriptions",
+      category: "subs",
       color: "#3ab7bf",
       icon: "computer",
     },
@@ -97,7 +97,7 @@ function App() {
       id: 3,
       name: "Netflix",
       amount: 15.5,
-      category: "Subscriptions",
+      category: "subs",
       color: "#3ab7bf",
       icon: "computer",
     },
@@ -113,7 +113,7 @@ function App() {
   const [expensesCategories, setExpensesCategories] = useState([
     {
       id: 0,
-      name: "Subscriptions",
+      name: "subs",
       amount: 0,
     },
     {
@@ -135,6 +135,7 @@ function App() {
 
   //usestates Consts
   const [isNotifMenuActive, setIsNotifMenuActive] = useState(false);
+  const [isShowExpenseNotif, setShowExpenseNotif] = useState(false);
   const [notificationMesage, setNotificationMessage] = useState(
     "Whoops, something went wrong here xD"
   );
@@ -201,6 +202,12 @@ function App() {
           : expense
       )
     );
+
+    //show the notification abotu edited expense
+    setShowExpenseNotif(true);
+    setTimeout(() => {
+      setShowExpenseNotif(false);
+    }, 3000); // 3000 milliseconds = 3 seconds
   };
 
   const addNewExpense = (newExpenseData) => {
@@ -212,6 +219,36 @@ function App() {
     };
     setExpenses((prevExpenses) => [...prevExpenses, newExpense]);
   };
+
+  function ExpenseNotification({ message }) {
+    return (
+      <>
+        <div
+          role="alert"
+          className="alert absolute w-1/4 mr-28 top-3 z-20 right-0 shadow-lg"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            className="stroke-info shrink-0 w-6 h-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+          <div>
+            <h3 className="font-bold">{message.message}</h3>
+            <div className="text-xs">{message.change}</div>
+          </div>
+          <button className="btn btn-sm">see more</button>
+        </div>
+      </>
+    );
+  }
   // Function to add a new income to the array
   const addNewIncome = (newIncomeData) => {
     // Calculate the new ID based on existing incomes
@@ -223,6 +260,11 @@ function App() {
   };
   return (
     <>
+      {isShowExpenseNotif && (
+        <ExpenseNotification
+          message={{ message: "xpense updated !", change: "£500 -> £950" }}
+        />
+      )}
       {isNotifMenuActive && (
         <div className="absolute w-2/4 left-1/4 top-[85%] h-auto z-50 bg-purple rounded-md centerPlz p-5">
           <p>{notificationMesage.title}</p>

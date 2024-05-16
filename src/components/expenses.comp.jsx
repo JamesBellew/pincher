@@ -142,7 +142,7 @@ function Expenses({
         >
           +
         </button>
-        <div className="grid pb-10  overflow-x-hidden overflow-auto max-h-36 grid-cols-3 gap-1 relative ">
+        <div className="grid pb-2  overflow-x-hidden overflow-auto max-h-36 grid-cols-4 gap-1 relative ">
           {expensesCategoriesArray.map((category) => {
             return (
               <div
@@ -153,7 +153,7 @@ function Expenses({
                     ? "border-tahiti/50 shadow-md border-b-2" // Applied if category.name is in the expenseListCategoryFilter array
                     : ""
                 }
-                cursor-pointer hover:bg-base-200 col-span-1 rounded-md bg-base-100/50 shadow-md text-center`}
+                cursor-pointer text-xs hover:bg-base-200 col-span-1   rounded-md bg-base-100/50 shadow-md   text-center`}
               >
                 <p className="text-sm">
                   £{totalsByCategory[category.name] || 0}
@@ -245,7 +245,32 @@ function Expenses({
       </div>
     );
   }
-
+  function ExpenseNotification(msg) {
+    return (
+      <>
+        <div role="alert" className="alert shadow-lg">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            className="stroke-info shrink-0 w-6 h-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+          <div>
+            <h3 className="font-bold">New message!</h3>
+            <div className="text-xs">You have 1 unread message</div>
+          </div>
+          <button className="btn btn-sm">See</button>
+        </div>
+      </>
+    );
+  }
   function EditExpenseModal() {
     const [isFormValid, setIsFormValid] = useState(false);
     const [formErrorMsg, setFormErrorMsg] = useState("");
@@ -262,6 +287,7 @@ function Expenses({
       });
       //close the modal
       setShowEditExpenseModal(false);
+      //would liek to do some sort of notifictation here to indicate an update of the expense
     };
     const editExpenseChangeHandler = (e) => {
       //!need to do some form validation to allow user to suubmit to the button
@@ -291,6 +317,28 @@ function Expenses({
             onClick={(e) => e.stopPropagation()}
             className="bg-base-100 z-20 py-10 w-3/4 px-10 text-center rounded-md"
           >
+            <div
+              className={`w-auto mb-5 mx-auto text-center flex justify-center items-center`}
+            >
+              {expensesArray.map((expense) => {
+                return (
+                  <div
+                    className={`h-2 w-6 m-1
+                  
+                  ${
+                    expense.name === expenseToEdit.name
+                      ? "bg-purple"
+                      : "bg-base-200"
+                  }
+                
+                  
+                  
+                  rounded-md`}
+                  ></div>
+                );
+              })}
+            </div>
+
             <h1> {expenseToEdit.name}</h1>
             <br></br>
             {formErrorMsg && (
