@@ -6,6 +6,7 @@ function Expenses({
   expensesCategoriesArray,
   onAddExpenseCategory,
   onAddExpense,
+  onEditExpense,
 }) {
   const [isNewCategoryNameValid, setIsNewCategoryNameValid] = useState(false);
   const [showExpenseCategoriesComp, setShowExpenseCategoriesComp] =
@@ -246,15 +247,37 @@ function Expenses({
   }
 
   function EditExpenseModal() {
-    const editExpenseChangeHandler = (e) => {
-      console.log("====================================");
-      console.log("changes the input");
-      console.log(e.target.value);
-      console.log(expenseToEdit.name);
-      console.log(expenseToEdit.id);
-      console.log("====================================");
-      //!need to do some form validation to allow user to suubmit to the button
+    const [isFormValid, setIsFormValid] = useState(false);
+    const [formErrorMsg, setFormErrorMsg] = useState("");
+    const [newExpenseValue, setNewExpenseValue] = useState(0);
+    const editExpenseBtnHandler = () => {
       //!need to then create a function eithin the aprent comp to allow the new edit to be pushed to the expenses array
+      onEditExpense({
+        id: expenseToEdit.id,
+        name: expenseToEdit.name,
+        amount: newExpenseValue,
+        category: expenseToEdit.category,
+        color: expenseToEdit.color,
+        icon: expenseToEdit.icon,
+      });
+      //close the modal
+      setShowEditExpenseModal(false);
+    };
+    const editExpenseChangeHandler = (e) => {
+      //!need to do some form validation to allow user to suubmit to the button
+      if (e.target.value > 0 && e.target.value != expenseToEdit.amount) {
+        setIsFormValid(true);
+        setNewExpenseValue(e.target.value);
+        setFormErrorMsg("");
+      } else if (e.target.value == expenseToEdit.amount) {
+        setIsFormValid(false);
+        setFormErrorMsg("Original Value Enterered :/");
+      } else if (e.target.value < 0) {
+        setIsFormValid(false);
+        setFormErrorMsg("Must be Greater Than 0 :/");
+      } else {
+        setIsFormValid(false);
+      }
     };
     return (
       <>
@@ -270,7 +293,13 @@ function Expenses({
           >
             <h1> {expenseToEdit.name}</h1>
             <br></br>
-
+            {formErrorMsg && (
+              <>
+                {" "}
+                <small className=" mb-5 ">{formErrorMsg}</small>
+                <br></br>
+              </>
+            )}
             <input
               onChange={editExpenseChangeHandler}
               type="number"
@@ -279,7 +308,13 @@ function Expenses({
               placeholder={expenseToEdit.amount}
             ></input>
             <br></br>
-            <button className="btn bg-purple mt-5">Save</button>
+            <button
+              disabled={!isFormValid}
+              onClick={editExpenseBtnHandler}
+              className="btn bg-purple mt-5"
+            >
+              Save
+            </button>
           </div>
         </div>
       </>

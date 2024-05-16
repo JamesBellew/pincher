@@ -193,6 +193,16 @@ function App() {
     // Update the expensesCategories state by appending the new category
     setExpensesCategories((prevCategories) => [...prevCategories, newCategory]);
   };
+  const editExpense = (updatedExpense) => {
+    setExpenses((prevExpenses) =>
+      prevExpenses.map((expense) =>
+        expense.id === updatedExpense.id
+          ? { ...expense, amount: updatedExpense.amount }
+          : expense
+      )
+    );
+  };
+
   const addNewExpense = (newExpenseData) => {
     const newExpense = {
       id: expenses.length,
@@ -317,6 +327,7 @@ function App() {
             expensesCategoriesArray={expensesCategories}
             onAddExpenseCategory={addNewExpenseCategory}
             onAddExpense={addNewExpense}
+            onEditExpense={editExpense}
           />
 
           <Graph />
