@@ -1,4 +1,6 @@
 import "../App.css";
+import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useRef, useState } from "react";
 
 function Expenses({
@@ -305,6 +307,10 @@ function Expenses({
         setIsFormValid(false);
       }
     };
+    const expenseEditNavBtnHandler = (expense) => {
+      setExpenseToEdit(expense);
+      // alert(expense.name);
+    };
     return (
       <>
         <div
@@ -315,7 +321,7 @@ function Expenses({
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="bg-base-100 z-20 py-10 w-3/4 px-10 text-center rounded-md"
+            className="bg-base-100 cursor-auto z-20 py-10 w-3/4 px-10 text-center rounded-md"
           >
             <div
               className={`w-auto mb-5 mx-auto text-center flex justify-center items-center`}
@@ -323,16 +329,13 @@ function Expenses({
               {expensesArray.map((expense) => {
                 return (
                   <div
-                    className={`h-2 w-6 m-1
-                  
+                    onClick={() => expenseEditNavBtnHandler(expense)}
+                    className={`h-3 w-5 m-1  cursor-pointer     
                   ${
                     expense.name === expenseToEdit.name
                       ? "bg-purple"
                       : "bg-base-200"
                   }
-                
-                  
-                  
                   rounded-md`}
                   ></div>
                 );
@@ -352,7 +355,7 @@ function Expenses({
               onChange={editExpenseChangeHandler}
               type="number"
               name="amount"
-              className="input w-32 bg-base-200"
+              className="input text-center w-32 bg-base-200"
               placeholder={expenseToEdit.amount}
             ></input>
             <br></br>
@@ -363,6 +366,29 @@ function Expenses({
             >
               Save
             </button>
+            <div className="nav-controls  flex w-2/4 h-auto mx-auto mt-5">
+              <div
+                onClick={() =>
+                  expenseToEdit.id > 0
+                    ? setExpenseToEdit(expensesArray[expenseToEdit.id - 1])
+                    : setExpenseToEdit(expensesArray[expensesArray.length - 1])
+                }
+                className="w-1/2 cursor-pointer  my-auto  h-full"
+              >
+                <FontAwesomeIcon icon={faArrowLeft} />
+              </div>
+              <div
+                onClick={() =>
+                  expenseToEdit.id < expensesArray.length - 1
+                    ? setExpenseToEdit(expensesArray[expenseToEdit.id + 1])
+                    : setExpenseToEdit(expensesArray[0])
+                }
+                className="w-1/2 cursor-pointer  h-full"
+              >
+                {" "}
+                <FontAwesomeIcon icon={faArrowRight} />
+              </div>
+            </div>
           </div>
         </div>
       </>

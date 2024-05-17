@@ -746,7 +746,114 @@ function Income({
   };
   return (
     <>
-      <div className="md:h-[80vh] h-[85vh] px-4 bg-base-200 shadow-md col-span-4 md:col-span-4 rounded-md">
+      <div className="md:h-[80vh] h-[85vh] px-4 bg-base-200 realtive shadow-md col-span-4 md:col-span-4 rounded-md">
+        {isEditIncomeModalActive && (
+          <>
+            <div
+              onClick={incomeClickHandler}
+              className="absolute inset-0 w-full h-full bg-base-200/75 flex items-center justify-center z-50"
+            >
+              {/* Stop propagation onClick inside the modal content to prevent the backdrop handler from firing */}
+              <div
+                className="bg-base-100 relative text-center p-16 m-4 rounded-md text-white w-1/2 max-w-lg mx-auto "
+                onClick={(e) => e.stopPropagation()}
+                // onClick={outerModalClickHanlder}
+              >
+                <div className=" absolute h-1/5 bottom-1/4 w-10 left-0 m-5 my-auto flex items-center justify-center">
+                  <button
+                    className="btn btn-ghost shadow-md"
+                    onClick={modalNavClickHandlerPrev}
+                  >
+                    <FontAwesomeIcon icon={faArrowLeft} />
+                  </button>
+                </div>
+                <div className=" absolute h-1/5 bottom-1/4 w-10 right-0 m-5 my-auto flex items-center justify-center">
+                  <button
+                    className="btn btn-ghost shadow-md"
+                    onClick={modalNavClickHandlerNext}
+                  >
+                    <FontAwesomeIcon icon={faArrowRight} />
+                  </button>
+                </div>
+                <div>
+                  {" "}
+                  <FontAwesomeIcon
+                    className="w-10 h-10"
+                    style={{ color: incomeSelectedForEdit.color }}
+                    icon={incomeSelectedForEdit.icon}
+                  ></FontAwesomeIcon>
+                </div>
+
+                {incomeArray.map((income, index) => (
+                  <button
+                    onClick={() => modalTopNavBtnClickHandler(index)}
+                    className={`${
+                      index === incomeSelectedForEdit.id ? "bg-tahiti" : " "
+                    }  rounded-md  inline-block bg-base-300 w-5 h-2 mx-1 mb-5`}
+                  ></button>
+                ))}
+                <br></br>
+
+                <p className="border-b-tahiti p-1 ">
+                  {incomeSelectedForEdit.name}
+                </p>
+
+                {isEditValueTouched && (
+                  <div className="calcs mt-2 w-3/5 mx-auto h-2 text-left flex justify-between p-2 items-center">
+                    <p className="text-xs">£{originalIncomeEditAmountFigure}</p>
+                    <p
+                      className={`text-xs ${
+                        updatedIncomeEditAmountFigure >
+                        originalIncomeEditAmountFigure
+                          ? "text-tahiti"
+                          : "text-purple"
+                      } `}
+                    >
+                      £{" "}
+                      {updatedIncomeEditAmountFigure -
+                        originalIncomeEditAmountFigure}
+                    </p>
+                  </div>
+                )}
+
+                {/* <p className='text-muted text-sm mt-5 max-w-xs text-left mx-24 text-tahiti'>2500</p>
+   <p className='text-muted text-sm mt-5 max-w-xs text-left mx-24 text-tahiti'>2500</p> */}
+                <input
+                  type="number"
+                  value={incomeSelectedForEdit.amount}
+                  onChange={(e) =>
+                    handleChange(e, +originalIncomeEditAmountFigure)
+                  }
+                  className="input text-center  input-bordered max-w-xs my-2"
+                  min={0}
+                  step={100}
+                />
+                <br></br>
+                <button
+                  disabled={!isEditIncomeFormBtnValid}
+                  className={` ${
+                    isEditIncomeFormBtnValid
+                      ? "bg-purple"
+                      : "bg-purple/25 text-purple/50 border-none cursor-none"
+                  } btn btn-purple bg-purple text-white mt-5 mr-5`}
+                  onClick={saveIncomeEditHandler}
+                >
+                  Save
+                </button>
+                <button
+                  className="btn btn-base-200 mt-5"
+                  onClick={closeEditIncomeModal}
+                >
+                  Close
+                </button>
+                {/* Add more content or buttons here */}
+                {/* <br></br>
+        <br></br> */}
+                {/* <button className='bg-tahiti p-2 rounded-md ' onClick={modalNavClickHandler}>Next</button> */}
+              </div>
+            </div>
+          </>
+        )}
         <div className="grid grid-cols-2 mx-auto gap-1 h-full grid-rows-8 ">
           <div className="relative col-span-2  row-span-1">
             {/* <span className='absolute text-xl font-bold mt-2 text-navy-dark-1'>Income</span> */}
@@ -814,116 +921,6 @@ function Income({
               }
             </div>
           </div>
-
-          {isEditIncomeModalActive && (
-            <>
-              <div
-                onClick={incomeClickHandler}
-                className="fixed inset-0 w-full h-full bg-base-200/75 flex items-center justify-center z-50"
-              >
-                {/* Stop propagation onClick inside the modal content to prevent the backdrop handler from firing */}
-                <div
-                  className="bg-base-100 relative text-center p-16 m-4 rounded-md text-white w-1/2 max-w-lg mx-auto "
-                  onClick={(e) => e.stopPropagation()}
-                  // onClick={outerModalClickHanlder}
-                >
-                  <div className=" absolute h-1/5 bottom-1/4 w-10 left-0 m-5 my-auto flex items-center justify-center">
-                    <button
-                      className="btn btn-ghost shadow-md"
-                      onClick={modalNavClickHandlerPrev}
-                    >
-                      <FontAwesomeIcon icon={faArrowLeft} />
-                    </button>
-                  </div>
-                  <div className=" absolute h-1/5 bottom-1/4 w-10 right-0 m-5 my-auto flex items-center justify-center">
-                    <button
-                      className="btn btn-ghost shadow-md"
-                      onClick={modalNavClickHandlerNext}
-                    >
-                      <FontAwesomeIcon icon={faArrowRight} />
-                    </button>
-                  </div>
-                  <div>
-                    {" "}
-                    <FontAwesomeIcon
-                      className="w-10 h-10"
-                      style={{ color: incomeSelectedForEdit.color }}
-                      icon={incomeSelectedForEdit.icon}
-                    ></FontAwesomeIcon>
-                  </div>
-
-                  {incomeArray.map((income, index) => (
-                    <button
-                      onClick={() => modalTopNavBtnClickHandler(index)}
-                      className={`${
-                        index === incomeSelectedForEdit.id ? "bg-tahiti" : " "
-                      }  rounded-md  inline-block bg-base-300 w-5 h-2 mx-1 mb-5`}
-                    ></button>
-                  ))}
-                  <br></br>
-
-                  <p className="border-b-tahiti p-1 ">
-                    {incomeSelectedForEdit.name}
-                  </p>
-
-                  {isEditValueTouched && (
-                    <div className="calcs mt-2 w-3/5 mx-auto h-2 text-left flex justify-between p-2 items-center">
-                      <p className="text-xs">
-                        £{originalIncomeEditAmountFigure}
-                      </p>
-                      <p
-                        className={`text-xs ${
-                          updatedIncomeEditAmountFigure >
-                          originalIncomeEditAmountFigure
-                            ? "text-tahiti"
-                            : "text-purple"
-                        } `}
-                      >
-                        £{" "}
-                        {updatedIncomeEditAmountFigure -
-                          originalIncomeEditAmountFigure}
-                      </p>
-                    </div>
-                  )}
-
-                  {/* <p className='text-muted text-sm mt-5 max-w-xs text-left mx-24 text-tahiti'>2500</p>
-   <p className='text-muted text-sm mt-5 max-w-xs text-left mx-24 text-tahiti'>2500</p> */}
-                  <input
-                    type="number"
-                    value={incomeSelectedForEdit.amount}
-                    onChange={(e) =>
-                      handleChange(e, +originalIncomeEditAmountFigure)
-                    }
-                    className="input text-center  input-bordered max-w-xs my-2"
-                    min={0}
-                    step={100}
-                  />
-                  <br></br>
-                  <button
-                    disabled={!isEditIncomeFormBtnValid}
-                    className={` ${
-                      isEditIncomeFormBtnValid
-                        ? "bg-purple"
-                        : "bg-purple/25 text-purple/50 border-none cursor-none"
-                    } btn btn-purple bg-purple text-white mt-5 mr-5`}
-                    onClick={saveIncomeEditHandler}
-                  >
-                    Save
-                  </button>
-                  <button
-                    className="btn btn-base-200 mt-5"
-                    onClick={closeEditIncomeModal}
-                  >
-                    Close
-                  </button>
-                  {/* Add more content or buttons here */}
-                  {/* <br></br>
-        <br></br> */}
-                  {/* <button className='bg-tahiti p-2 rounded-md ' onClick={modalNavClickHandler}>Next</button> */}
-                </div>
-              </div>
-            </>
-          )}
 
           <dialog id="my_modal_1" className="modal h-full">
             <div className="modal-box   h-[80%]">

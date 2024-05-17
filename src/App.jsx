@@ -15,6 +15,7 @@ function App() {
       amount: 2500,
       color: "#3ab7bf",
       icon: "coffee",
+      date: "01/05/2024",
     },
     {
       id: 1,
@@ -22,6 +23,7 @@ function App() {
       amount: 2500,
       color: "#8182ff",
       icon: "computer",
+      date: "15/05/2024",
     },
     {
       id: 2,
@@ -29,6 +31,7 @@ function App() {
       amount: 3500,
       color: "#3ab7bf",
       icon: "coffee",
+      date: "20/05/2024",
     },
   ]);
   const [incomeHistory, setIncomeHistory] = useState([
