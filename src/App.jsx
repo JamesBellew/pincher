@@ -48,6 +48,7 @@ function App() {
       figureChange: -50,
     },
   ]);
+  //test
   const [monthlyIncomeHistory, setMonthlyIncomeHistory] = useState([
     {
       id: 0,
